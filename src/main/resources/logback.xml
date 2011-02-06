@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true">
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%-4relative %-5level %logger{35} - %msg %n</pattern>
+    </encoder>
+  </appender>
+
+
+  <logger name="org.jboss.weld" level="DEBUG"/>
+  <logger name="org.jboss.resteasy.core" level="DEBUG"/>
+  <logger name="org.jboss.resteasy.mock" level="DEBUG"/>
+
+  <root level="info">
+    <appender-ref ref="STDOUT" />
+  </root>
+</configuration>

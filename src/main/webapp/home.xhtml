@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.prime.com.tr/ui"
+    xmlns:s="http://jboss.org/seam/faces"
+	template="/WEB-INF/templates/default.xhtml">
+	<ui:define name="content">
+
+		<f:metadata>
+			<s:viewAction action="#{configurationBean.currentConfiguration}" />
+		</f:metadata>
+
+		<h:form>
+			<h:panelGrid columns="3">
+				<h:outputLabel value="Local Storage Directory:" for="localReposDir" />
+				<h:inputText id="localReposDir" value="#{configurationBean.currentConfiguration.localRepositoryDir}" converter="file"/>
+				<p:message for="localReposDir" />
+
+				<h:outputLabel value="Swarm ID:" for="swarmId" />
+				<h:inputText id="swarmId" value="#{configurationBean.currentConfiguration.swarmId}" converter="uuid" />
+				<p:message for="swarmId" />
+				
+				<h:outputLabel value="Encryption Key:" for="key" />
+                <h:inputText id="key" value="#{configurationBean.currentConfiguration.encryptionKey}" />
+                <p:message for="key" />
+			</h:panelGrid>
+			<p:commandButton value="Save" action="#{configurationBean.saveConfiguration}" ajax="false" />
+		</h:form>
+		<h:form>
+		  <p:commandButton value="Backup Now" action="#{backupBean.backup()}" ajax="false" />
+		</h:form>
+		
+		<br /> <br />
+		<h2>Add Backup Roots:</h2>
+        <h:form>
+            <h:panelGrid columns="3">
+                <h:outputLabel value="Path:" for="path" />
+                <h:inputText id="path" value="#{localIndexBean.pathToAdd}" converter="file"/>
+                <p:message for="path" />
+            </h:panelGrid>
+            <p:commandButton value="Add" action="#{localIndexBean.addRootPath}" ajax="false" />
+            
+            <p:dataList value="#{localIndexBean.backupRoots}" var="f">
+                #{f.file.absolutePath}
+            </p:dataList>
+        </h:form>
+        
+        <h:form>
+            <p:treeTable value="#{localIndexBean.root}" var="p">
+                <p:column>
+                    <f:facet name="header">Path</f:facet>
+                    <h:outputText value="#{p.file.absolutePath}"/>
+                </p:column>
+                <p:column>
+                     <f:facet name="header">Backed Up</f:facet>
+                    #{p.backedUp}
+                </p:column>
+                <p:column>
+                    <f:facet name="header">Out Of Date</f:facet>
+                    #{p.outOfDate}
+                </p:column>
+            </p:treeTable>
+        </h:form>
+        
+        <h:form>
+            <p:dataTable value="#{localIndex.outOfDatePaths}" var="p">
+                <p:column headerText="Path">#{p.file.absolutePath}</p:column>
+            </p:dataTable>
+        </h:form>
+	</ui:define>
+</ui:composition>
