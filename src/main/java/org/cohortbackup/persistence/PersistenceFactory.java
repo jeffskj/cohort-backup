@@ -1,16 +1,16 @@
 package org.cohortbackup.persistence;
 
-import javax.enterprise.context.ConversationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 
-import org.jboss.seam.persistence.SeamManaged;
+import org.jboss.seam.solder.core.ExtensionManaged;
 
 public class PersistenceFactory {
-    @SeamManaged
+    @ExtensionManaged
     @Produces
-    @PersistenceUnit
-    @ConversationScoped
+    @PersistenceUnit(unitName="cohort")
+    @RequestScoped
     EntityManagerFactory producerField;
 }

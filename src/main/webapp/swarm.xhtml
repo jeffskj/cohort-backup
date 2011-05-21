@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.prime.com.tr/ui"
+    xmlns:s="http://jboss.org/seam/faces"
+	template="/WEB-INF/templates/default.xhtml">
+	<ui:define name="content">
+
+		<f:metadata>
+			<s:viewAction action="#{configurationBean.currentConfiguration}" />
+		</f:metadata>
+		
+		<h2>Add Backup Roots:</h2>
+        <h:form>
+            <h:panelGrid columns="3">
+                <h:outputLabel value="Name:" for="name" />
+                <h:inputText id="name" value="#{swarmBean.node.name}"/>
+                <p:message for="name" />
+                
+                <h:outputLabel value="IP Address:" for="ip" />
+                <h:inputText id="ip" value="#{swarmBean.node.ipAddress}"/>
+                <p:message for="ip" />
+                
+                <h:outputLabel value="Port:" for="port" />
+                <h:inputText id="port" value="#{swarmBean.node.port}"/>
+                <p:message for="port" />
+            </h:panelGrid>
+            <p:commandButton value="Add Node" action="#{swarmBean.addMember}" ajax="false"/>
+        </h:form>
+        
+        <h:form>
+            <p:dataTable value="#{swarmBean.currentNodes}" var="n">
+                <p:column headerText="Name">#{n.name}</p:column>
+                <p:column headerText="IP Address">#{n.ipAddress}</p:column>
+                <p:column headerText="Port">#{n.port}</p:column>
+            </p:dataTable>
+        </h:form>
+	</ui:define>
+</ui:composition>

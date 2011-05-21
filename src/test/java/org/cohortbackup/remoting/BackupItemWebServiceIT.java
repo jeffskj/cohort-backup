@@ -13,12 +13,9 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.cohortbackup.backup.LocalRepository;
 import org.cohortbackup.domain.BackupItem;
 import org.cohortbackup.domain.Configuration;
-import org.cohortbackup.domain.MockConfiguration;
 import org.cohortbackup.domain.Node;
-import org.cohortbackup.persistence.BackupItemService;
+import org.cohortbackup.mock.MockConfiguration;
 import org.jboss.arquillian.api.Deployment;
-import org.jboss.arquillian.api.Run;
-import org.jboss.arquillian.api.RunModeType;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -27,7 +24,6 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 
-@Run(RunModeType.AS_CLIENT)
 @RunWith(Arquillian.class)
 public class BackupItemWebServiceIT extends AbstractServiceIT
 {
@@ -36,10 +32,8 @@ public class BackupItemWebServiceIT extends AbstractServiceIT
     
     @Deployment
     public static WebArchive createTestArchive() {
-        return createBaseArchive(true)
-            .addClasses(BackupItemWebService.class, BackupItemWebServiceImpl.class, LocalRepository.class)
-            .addClasses(MockConfiguration.class) 
-            .addClasses(Configuration.class, MockBackupItemService.class, BackupItemService.class);
+        return createBaseArchive()
+            .addClasses(MockConfiguration.class);//, MockBackupItemService.class);
     }
     
     @Test
@@ -56,6 +50,7 @@ public class BackupItemWebServiceIT extends AbstractServiceIT
         
         Node n = new Node();
         n.setIpAddress("localhost");
+        n.setPort(9090);
         
         System.setProperty("cohort.contextPath", "test");
         BackupItemWebServiceClientImpl client = new BackupItemWebServiceClientImpl();

@@ -9,4 +9,5 @@ public interface SwarmService {
     Swarm getSwarm(UUID id);
     Swarm getCurrentSwarm();
     Node getCurrentNode();
+    void addNode(UUID id, Node node);
 }

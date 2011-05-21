@@ -1,4 +1,4 @@
-package org.cohortbackup.remoting;
+package org.cohortbackup.mock;
 
 import java.util.Map;
 import java.util.UUID;

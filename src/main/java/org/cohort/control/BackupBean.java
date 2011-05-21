@@ -4,7 +4,7 @@ import javax.enterprise.inject.Model;
 import javax.inject.Inject;
 
 import org.cohortbackup.backup.BackupService;
-import org.jboss.seam.persistence.transaction.Transactional;
+import org.jboss.seam.transaction.Transactional;
 
 @Model
 public class BackupBean {

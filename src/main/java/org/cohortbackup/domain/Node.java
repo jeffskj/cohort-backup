@@ -23,8 +23,9 @@ import org.apache.commons.lang.builder.ToStringStyle;
 public class Node
 {
     @Id 
-    private UUID uuid;
+    private UUID id;
     private String ipAddress;
+    private int port;
     private String name;
     private long totalSpace;
     private long freeSpace;
@@ -44,7 +45,7 @@ public class Node
 
     public Node(UUID id)
     {
-        uuid = id;
+        this.id = id;
     }
     
     public String getIpAddress()
@@ -97,14 +98,14 @@ public class Node
         this.connectionSpeed = connectionSpeed;
     }
 
-    public void setUuid(UUID uuid)
+    public void setId(UUID uuid)
     {
-        this.uuid = uuid;
+        id = uuid;
     }
 
-    public UUID getUuid()
+    public UUID getId()
     {
-        return uuid;
+        return id;
     }
 
     public void setBackupItems(Set<BackupItem> backupItems)
@@ -132,4 +133,39 @@ public class Node
     {
         return swarm;
     }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Node other = (Node) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        return true;
+    }
+    
+    
 }

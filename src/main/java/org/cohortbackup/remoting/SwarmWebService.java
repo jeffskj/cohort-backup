@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -32,4 +33,9 @@ public interface SwarmWebService
     @Path("/{id}/members")
     @Consumes("application/xml")
     void addSwarmMember(@PathParam("id") UUID id, Node node);
+    
+    @POST
+    @Path("/{id}/members")
+    @Consumes("application/xml")
+    void setMembers(@PathParam("id") UUID id, Set<Node> nodes);
 }

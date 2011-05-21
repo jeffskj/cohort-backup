@@ -8,6 +8,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElementWrapper;
@@ -25,6 +26,9 @@ public class Swarm
     @XmlElementWrapper(name="nodes")
     private Set<Node> nodes = new HashSet<Node>();
 
+    @OneToOne(cascade=CascadeType.ALL)
+    private Node coordinator;
+    
     public void setNodes(Set<Node> nodes)
     {
         this.nodes = nodes;
@@ -43,5 +47,13 @@ public class Swarm
     public UUID getId()
     {
         return id;
+    }
+
+    public void setCoordinator(Node coordinator) {
+        this.coordinator = coordinator;
+    }
+
+    public Node getCoordinator() {
+        return coordinator;
     }
 }

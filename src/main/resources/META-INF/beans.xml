@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:s="urn:java:ee" xmlns:t="urn:java:org.jboss.seam.transaction"
 	xsi:schemaLocation="
       http://java.sun.com/xml/ns/javaee 
       http://java.sun.com/xml/ns/javaee/beans_1_0.xsd">
+    <t:SeSynchronizations>
+        <s:modifies />
+    </t:SeSynchronizations>
+    <t:EntityTransaction>
+        <s:modifies />
+    </t:EntityTransaction>
 	<interceptors>
-		<class>org.jboss.seam.persistence.transaction.TransactionInterceptor</class>
+		<class>org.jboss.seam.transaction.TransactionInterceptor</class>
 	</interceptors>
-	<alternatives>
+	<!-- <alternatives>
 		<class>org.cohortbackup.encryption.BasicEncryptionService</class>
-	</alternatives>
+	</alternatives> -->
 </beans>

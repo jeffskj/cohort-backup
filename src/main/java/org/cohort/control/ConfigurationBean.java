@@ -5,8 +5,8 @@ import javax.inject.Inject;
 
 import org.cohortbackup.domain.Configuration;
 import org.cohortbackup.persistence.ConfigurationService;
-import org.jboss.seam.persistence.transaction.TransactionPropagation;
-import org.jboss.seam.persistence.transaction.Transactional;
+import org.jboss.seam.transaction.TransactionPropagation;
+import org.jboss.seam.transaction.Transactional;
 
 @Model 
 public class ConfigurationBean {

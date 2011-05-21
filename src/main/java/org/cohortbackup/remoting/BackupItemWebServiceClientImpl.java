@@ -15,6 +15,7 @@ import org.cohortbackup.backup.LocalRepository;
 import org.cohortbackup.domain.BackupItem;
 import org.cohortbackup.domain.Node;
 import org.jboss.resteasy.client.ProxyFactory;
+import org.jboss.resteasy.client.core.executors.ApacheHttpClient4Executor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,13 +92,13 @@ public class BackupItemWebServiceClientImpl implements BackupItemWebServiceClien
     }
 
     private Map<Node, BackupItemWebService> createProxyCache() {
-        return new MapMaker().concurrencyLevel(1).expiration(1, TimeUnit.HOURS)
+        return new MapMaker().concurrencyLevel(1).expireAfterAccess(1L, TimeUnit.HOURS)
             .makeComputingMap(new Function<Node, BackupItemWebService>() {
             @Override
             public BackupItemWebService apply(Node n) {
-                String baseUrl = "http://" + n.getIpAddress() + ":8080/" 
+                String baseUrl = "http://" + n.getIpAddress() + ":" + n.getPort() + "/" 
                     + System.getProperty("cohort.contextPath", "cohort");
-                return ProxyFactory.create(BackupItemWebService.class, baseUrl);
+                return ProxyFactory.create(BackupItemWebService.class, baseUrl, new ApacheHttpClient4Executor());
             }});
     }
 }

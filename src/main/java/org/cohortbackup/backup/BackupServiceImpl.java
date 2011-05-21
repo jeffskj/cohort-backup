@@ -22,9 +22,11 @@ import org.cohortbackup.domain.Swarm;
 import org.cohortbackup.encryption.EncryptionService;
 import org.cohortbackup.remoting.BackupItemWebServiceClient;
 import org.h2.util.IOUtils;
+import org.jboss.seam.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Transactional
 public class BackupServiceImpl implements BackupService {
     private Logger logger = LoggerFactory.getLogger(getClass());
     
@@ -79,7 +81,7 @@ public class BackupServiceImpl implements BackupService {
 
     private Node findEligibleNode() {
         for (Node n : currentSwarm.getNodes()) {
-            if (!n.getUuid().equals(currentNode.getUuid()) && n.getFreeSpace() > 0) {
+            if (!n.getId().equals(currentNode.getId())) {
                 return n;
             }
         }

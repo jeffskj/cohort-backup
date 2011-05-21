@@ -25,7 +25,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class BackupItem {
-    @Id
+    @Id //@Type(type="uuid-char")
     private UUID id;
     private String encryptedPath;
     

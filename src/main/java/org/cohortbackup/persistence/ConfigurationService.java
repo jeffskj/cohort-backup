@@ -18,6 +18,7 @@ public class ConfigurationService {
         if (config == null) {
             config = new Configuration();
             config.setNodeId(UUID.randomUUID());
+            config.setSwarmId(UUID.randomUUID());
             em.persist(config);
         }
         

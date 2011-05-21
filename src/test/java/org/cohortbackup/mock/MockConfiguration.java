@@ -1,4 +1,4 @@
-package org.cohortbackup.domain;
+package org.cohortbackup.mock;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,6 +7,8 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.apache.commons.io.FileUtils;
+import org.cohortbackup.domain.Configuration;
+import org.cohortbackup.domain.Current;
 import org.cohortbackup.testing.Mock;
 
 import com.google.common.io.Files;

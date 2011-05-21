@@ -10,7 +10,6 @@ import javax.enterprise.inject.Alternative;
 import org.apache.commons.io.IOUtils;
 import org.jasypt.util.binary.BasicBinaryEncryptor;
 import org.jasypt.util.text.BasicTextEncryptor;
-import org.jboss.weld.exceptions.UnsupportedOperationException;
 
 @Alternative
 public class BasicEncryptionService implements EncryptionService {

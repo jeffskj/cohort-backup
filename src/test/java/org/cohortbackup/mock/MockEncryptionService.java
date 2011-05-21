@@ -1,7 +1,9 @@
-package org.cohortbackup.encryption;
+package org.cohortbackup.mock;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+
+import org.cohortbackup.encryption.EncryptionService;
 
 public class MockEncryptionService implements EncryptionService {
 

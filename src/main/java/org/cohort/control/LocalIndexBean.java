@@ -9,8 +9,8 @@ import javax.inject.Inject;
 import org.cohortbackup.domain.LocalIndex;
 import org.cohortbackup.domain.LocalPath;
 import org.cohortbackup.persistence.LocalIndexService;
-import org.jboss.seam.persistence.transaction.TransactionPropagation;
-import org.jboss.seam.persistence.transaction.Transactional;
+import org.jboss.seam.transaction.TransactionPropagation;
+import org.jboss.seam.transaction.Transactional;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 

@@ -1,4 +1,4 @@
-package org.cohortbackup.persistence;
+package org.cohortbackup.mock;
 
 import java.io.File;
 import java.util.Arrays;
