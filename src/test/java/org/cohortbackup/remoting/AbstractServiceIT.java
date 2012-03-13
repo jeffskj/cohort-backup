@@ -7,7 +7,6 @@ import org.cohortbackup.domain.Node;
 import org.cohortbackup.encryption.EncryptionService;
 import org.cohortbackup.persistence.PersistenceFactory;
 import org.cohortbackup.util.ChecksumUtils;
-import org.eclipse.jetty.util.resource.ResourceFactory;
 import org.jboss.resteasy.client.ClientExecutor;
 import org.jboss.resteasy.core.MethodInjectorImpl;
 import org.jboss.resteasy.core.PathParamInjector;
@@ -59,7 +58,7 @@ public class AbstractServiceIT
             .addPackages(true, StringUtils.class.getPackage())
             .addPackages(true, IOUtils.class.getPackage())
             .addPackages(true, POJOResourceFactory.class.getPackage())
-            .addPackages(true, ResourceFactory.class.getPackage())
+//            .addPackages(true, ResourceFactory.class.getPackage())
             .addPackages(true, MethodInjectorImpl.class.getPackage())
             .addPackages(true, ClientExecutor.class.getPackage())
             .addPackages(true, PathParamInjector.class.getPackage())

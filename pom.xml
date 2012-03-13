@@ -78,7 +78,10 @@
 			<version>2.2</version>
 			<scope>runtime</scope>
 		</dependency>
-
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>javax.validation</groupId>
 			<artifactId>validation-api</artifactId>
@@ -102,7 +105,7 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>r08</version>
+			<version>11.0.2</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>

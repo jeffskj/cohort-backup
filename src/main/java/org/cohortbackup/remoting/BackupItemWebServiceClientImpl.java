@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -14,20 +13,15 @@ import org.apache.commons.io.IOUtils;
 import org.cohortbackup.backup.LocalRepository;
 import org.cohortbackup.domain.BackupItem;
 import org.cohortbackup.domain.Node;
-import org.jboss.resteasy.client.ProxyFactory;
-import org.jboss.resteasy.client.core.executors.ApacheHttpClient4Executor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.base.Function;
-import com.google.common.collect.MapMaker;
 
 @ApplicationScoped
 public class BackupItemWebServiceClientImpl implements BackupItemWebServiceClient
 {
     private static final int MAX_ATTEMPTS = 3;
     private Logger logger = LoggerFactory.getLogger(getClass());
-    private Map<Node, BackupItemWebService> proxyCache = createProxyCache();
+    private Map<Node, BackupItemWebService> proxyCache;// = createProxyCache();
     
     @Inject
     LocalRepository repository;
@@ -91,14 +85,14 @@ public class BackupItemWebServiceClientImpl implements BackupItemWebServiceClien
         return proxyCache.get(n);
     }
 
-    private Map<Node, BackupItemWebService> createProxyCache() {
-        return new MapMaker().concurrencyLevel(1).expireAfterAccess(1L, TimeUnit.HOURS)
-            .makeComputingMap(new Function<Node, BackupItemWebService>() {
-            @Override
-            public BackupItemWebService apply(Node n) {
-                String baseUrl = "http://" + n.getIpAddress() + ":" + n.getPort() + "/" 
-                    + System.getProperty("cohort.contextPath", "cohort");
-                return ProxyFactory.create(BackupItemWebService.class, baseUrl, new ApacheHttpClient4Executor());
-            }});
-    }
+//    private Map<Node, BackupItemWebService> createProxyCache() {
+//        return new MapMaker().concurrencyLevel(1).expireAfterAccess(1L, TimeUnit.HOURS)
+//            .makeComputingMap(new Function<Node, BackupItemWebService>() {
+//            @Override
+//            public BackupItemWebService apply(Node n) {
+//                String baseUrl = "http://" + n.getIpAddress() + ":" + n.getPort() + "/" 
+//                    + System.getProperty("cohort.contextPath", "cohort");
+//                return ProxyFactory.create(BackupItemWebService.class, baseUrl, new ApacheHttpClient4Executor());
+//            }});
+//    }
 }
