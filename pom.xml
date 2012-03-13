@@ -213,12 +213,12 @@
 
 		<!-- TEST DEPENDENCIES -->
 
-		<dependency>
+		<!-- <dependency>
 			<groupId>com.jeffskj</groupId>
 			<artifactId>persistence-tester</artifactId>
 			<version>0.1-SNAPSHOT</version>
 			<scope>test</scope>
-		</dependency>
+		</dependency> -->
 
 		<dependency>
 			<groupId>org.jboss.arquillian</groupId>
