@@ -17,12 +17,12 @@ import javax.xml.bind.annotation.XmlTransient;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+
 @Entity
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Node
-{
-    @Id 
+public class Node {
+    @Id
     private UUID id;
     private String ipAddress;
     private int port;
@@ -30,107 +30,88 @@ public class Node
     private long totalSpace;
     private long freeSpace;
     private int connectionSpeed;
-    
+
     @XmlTransient
-    @ManyToOne(cascade={CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     private Swarm swarm;
-    
+
     @XmlTransient
-    @ManyToMany(fetch=FetchType.LAZY, cascade=CascadeType.ALL, mappedBy="backupNodes")
-    private Set<BackupItem> backupItems = new HashSet<BackupItem>();    
-    
-    public Node()
-    {
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "backupNodes")
+    private Set<BackupItem> backupItems = new HashSet<BackupItem>();
+
+    public Node() {
     }
 
-    public Node(UUID id)
-    {
+    public Node(UUID id) {
         this.id = id;
     }
-    
-    public String getIpAddress()
-    {
+
+    public String getIpAddress() {
         return ipAddress;
     }
 
-    public void setIpAddress(String ipAddress)
-    {
+    public void setIpAddress(String ipAddress) {
         this.ipAddress = ipAddress;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public long getTotalSpace()
-    {
+    public long getTotalSpace() {
         return totalSpace;
     }
 
-    public void setTotalSpace(long totalSpace)
-    {
+    public void setTotalSpace(long totalSpace) {
         this.totalSpace = totalSpace;
     }
 
-    public long getFreeSpace()
-    {
+    public long getFreeSpace() {
         return freeSpace;
     }
 
-    public void setFreeSpace(long freeSpace)
-    {
+    public void setFreeSpace(long freeSpace) {
         this.freeSpace = freeSpace;
     }
 
-    public int getConnectionSpeed()
-    {
+    public int getConnectionSpeed() {
         return connectionSpeed;
     }
 
-    public void setConnectionSpeed(int connectionSpeed)
-    {
+    public void setConnectionSpeed(int connectionSpeed) {
         this.connectionSpeed = connectionSpeed;
     }
 
-    public void setId(UUID uuid)
-    {
+    public void setId(UUID uuid) {
         id = uuid;
     }
 
-    public UUID getId()
-    {
+    public UUID getId() {
         return id;
     }
 
-    public void setBackupItems(Set<BackupItem> backupItems)
-    {
+    public void setBackupItems(Set<BackupItem> backupItems) {
         this.backupItems = backupItems;
     }
 
-    public Set<BackupItem> getBackupItems()
-    {
+    public Set<BackupItem> getBackupItems() {
         return backupItems;
     }
-    
+
     @Override
-    public String toString()
-    {
+    public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
     }
 
-    public void setSwarm(Swarm swarm)
-    {
+    public void setSwarm(Swarm swarm) {
         this.swarm = swarm;
     }
 
-    public Swarm getSwarm()
-    {
+    public Swarm getSwarm() {
         return swarm;
     }
 
@@ -166,6 +147,5 @@ public class Node
             return false;
         return true;
     }
-    
-    
+
 }

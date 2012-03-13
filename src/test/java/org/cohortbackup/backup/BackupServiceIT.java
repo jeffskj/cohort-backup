@@ -19,39 +19,39 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class BackupServiceIT extends AbstractServiceIT
-{
+public class BackupServiceIT extends AbstractServiceIT {
     private static final String FAKE_DOCUMENT_TO_BACKUP = "LoremIpsum.docx";
 
-    @Deployment @TargetsContainer("container-1")
+    @Deployment
+    @TargetsContainer("container-1")
     public static WebArchive createTestArchive() {
         return createBaseArchive()
-//            .addClasses(MockConfiguration.class, MockLocalIndexService.class) 
-//            .addClasses(LocalPath.class, SwarmService.class,  MockSwarmService.class)
-//            .addClasses(BackupItemWebServiceClient.class, MockBackupItemWebServiceClient.class)
-//            .addClasses(MockEncryptionService.class)
-//            .addClasses(BackupServiceImpl.class, LocalRepository.class)
-            .addAsResource(FAKE_DOCUMENT_TO_BACKUP, FAKE_DOCUMENT_TO_BACKUP);
+        // .addClasses(MockConfiguration.class, MockLocalIndexService.class)
+        // .addClasses(LocalPath.class, SwarmService.class, MockSwarmService.class)
+        // .addClasses(BackupItemWebServiceClient.class, MockBackupItemWebServiceClient.class)
+        // .addClasses(MockEncryptionService.class)
+        // .addClasses(BackupServiceImpl.class, LocalRepository.class)
+                .addAsResource(FAKE_DOCUMENT_TO_BACKUP, FAKE_DOCUMENT_TO_BACKUP);
     }
-    
-//    @Inject
-//    MockLocalIndexService indexService;
+
+    // @Inject
+    // MockLocalIndexService indexService;
 
     @Inject
     BackupService backupService;
-    
+
     @Test
     public void getBackupItemContents() throws FileNotFoundException, IOException {
-//        File dir = indexService.getDir();
-//        URL resource = getClass().getClassLoader().getResource(FAKE_DOCUMENT_TO_BACKUP);
-//        Resources.copy(resource, new FileOutputStream(new File(dir, FAKE_DOCUMENT_TO_BACKUP)));
-//        backupService.backup();
+        // File dir = indexService.getDir();
+        // URL resource = getClass().getClassLoader().getResource(FAKE_DOCUMENT_TO_BACKUP);
+        // Resources.copy(resource, new FileOutputStream(new File(dir, FAKE_DOCUMENT_TO_BACKUP)));
+        // backupService.backup();
     }
-    
+
     @AfterClass
     public static void cleanupTemp() throws IOException {
         File tempDir = FileUtils.getTempDirectory();
-        File[] files = tempDir.listFiles((FilenameFilter)new WildcardFileFilter("testing-repos-dir*"));
+        File[] files = tempDir.listFiles((FilenameFilter) new WildcardFileFilter("testing-repos-dir*"));
         for (File file : files) {
             System.out.println("deleting " + file);
             try {

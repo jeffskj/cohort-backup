@@ -7,17 +7,14 @@ import javax.ws.rs.ext.Provider;
 import org.jboss.resteasy.spi.StringConverter;
 
 @Provider
-public class UUIDStringConverter implements StringConverter<UUID>
-{
+public class UUIDStringConverter implements StringConverter<UUID> {
     @Override
-    public UUID fromString(String str)
-    {
+    public UUID fromString(String str) {
         return UUID.fromString(str);
     }
 
     @Override
-    public String toString(UUID value)
-    {
+    public String toString(UUID value) {
         return value.toString();
     }
 }

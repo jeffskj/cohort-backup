@@ -27,12 +27,12 @@ public class MockConfiguration extends Configuration {
     public File getLocalRepositoryDir() {
         return reposDir;
     }
-    
+
     @Override
     public String getEncryptionKey() {
         return "test";
     }
-    
+
     @PreDestroy
     public void cleanup() {
         try {

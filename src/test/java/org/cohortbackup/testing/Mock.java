@@ -12,4 +12,5 @@ import javax.enterprise.inject.Stereotype;
 @Stereotype
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface Mock {}
+public @interface Mock {
+}

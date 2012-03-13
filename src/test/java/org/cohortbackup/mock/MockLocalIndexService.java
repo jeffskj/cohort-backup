@@ -6,24 +6,24 @@ import java.util.Arrays;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 
-import org.cohortbackup.domain.LocalIndex;
-import org.cohortbackup.domain.LocalPath;
+import org.cohort.repos.Index;
+import org.cohort.repos.Path;
 
 import com.google.common.io.Files;
 
 @ApplicationScoped
 public class MockLocalIndexService {
     File createTempDir = Files.createTempDir();
-    private LocalIndex localIndex;
-    
+    private Index localIndex;
+
     public File getDir() {
         return createTempDir;
     }
-    
-    @Produces 
-    public LocalIndex getLocalIndex() {
+
+    @Produces
+    public Index getLocalIndex() {
         if (localIndex == null) {
-            localIndex = new LocalIndex(Arrays.asList(new LocalPath(createTempDir)));
+            localIndex = new Index(Arrays.asList(new Path(createTempDir)));
         }
         return localIndex;
     }

@@ -16,8 +16,7 @@ import org.cohortbackup.domain.Swarm;
 import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
 
 @Path("/swarm")
-public interface SwarmWebService
-{
+public interface SwarmWebService {
     @GET
     @Path("/{id}")
     @Produces("application/xml")
@@ -33,7 +32,7 @@ public interface SwarmWebService
     @Path("/{id}/members")
     @Consumes("application/xml")
     void addSwarmMember(@PathParam("id") UUID id, Node node);
-    
+
     @POST
     @Path("/{id}/members")
     @Consumes("application/xml")

@@ -13,12 +13,12 @@ public class Configuration {
     @Id
     @SuppressWarnings("unused")
     private long id = ID;
-    
+
     private File localRepositoryDir;
     private String encryptionKey;
     private UUID swarmId;
     private UUID nodeId;
-    
+
     public void setLocalRepositoryDir(File localRepositoryPath) {
         localRepositoryDir = localRepositoryPath;
     }
@@ -38,7 +38,7 @@ public class Configuration {
     public void setSwarmId(UUID swarmId) {
         this.swarmId = swarmId;
     }
-    
+
     public UUID getSwarmId() {
         return swarmId;
     }

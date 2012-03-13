@@ -17,35 +17,30 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Swarm
-{
+public class Swarm {
     @Id
     private UUID id;
-    
-    @OneToMany(cascade=CascadeType.ALL)
-    @XmlElementWrapper(name="nodes")
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @XmlElementWrapper(name = "nodes")
     private Set<Node> nodes = new HashSet<Node>();
 
-    @OneToOne(cascade=CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     private Node coordinator;
-    
-    public void setNodes(Set<Node> nodes)
-    {
+
+    public void setNodes(Set<Node> nodes) {
         this.nodes = nodes;
     }
 
-    public Set<Node> getNodes()
-    {
+    public Set<Node> getNodes() {
         return nodes;
     }
 
-    public void setId(UUID id)
-    {
+    public void setId(UUID id) {
         this.id = id;
     }
 
-    public UUID getId()
-    {
+    public UUID getId() {
         return id;
     }
 

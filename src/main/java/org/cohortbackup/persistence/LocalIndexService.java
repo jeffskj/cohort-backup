@@ -8,27 +8,30 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 
-import org.cohortbackup.domain.LocalIndex;
-import org.cohortbackup.domain.LocalPath;
+import org.cohort.repos.Index;
+import org.cohort.repos.Path;
 
-@ApplicationScoped 
+@ApplicationScoped
 public class LocalIndexService {
 
-    @Inject EntityManager em;
+    @Inject
+    EntityManager em;
 
-    private LocalIndex localIndex;
-    
-    @Produces @ApplicationScoped @Named
-    public LocalIndex getLocalIndex() {
+    private Index localIndex;
+
+    @Produces
+    @ApplicationScoped
+    @Named
+    public Index getLocalIndex() {
         if (localIndex == null) {
-            List<LocalPath> paths = em.createQuery("from LocalPath where parent is null", LocalPath.class).getResultList();
-            localIndex = new LocalIndex(paths);
+            List<Path> paths = em.createQuery("from LocalPath where parent is null", Path.class).getResultList();
+            localIndex = new Index(paths);
         }
         return localIndex;
     }
-    
-    public void addRootPath(LocalPath path) {
-        getLocalIndex().getBackupRoots().add(path);
+
+    public void addRootPath(Path path) {
+        getLocalIndex().getRoots().add(path);
         em.persist(path);
     }
 }

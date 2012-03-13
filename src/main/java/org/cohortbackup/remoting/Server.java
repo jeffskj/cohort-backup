@@ -14,5 +14,5 @@ import javax.inject.Qualifier;
 @Qualifier
 @Retention(RetentionPolicy.RUNTIME)
 @Target({METHOD, FIELD, PARAMETER, TYPE})
-public @interface Server
-{}
+public @interface Server {
+}

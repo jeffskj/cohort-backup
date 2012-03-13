@@ -6,8 +6,8 @@ import java.util.List;
 import javax.enterprise.inject.Model;
 import javax.inject.Inject;
 
-import org.cohortbackup.domain.LocalIndex;
-import org.cohortbackup.domain.LocalPath;
+import org.cohort.repos.Index;
+import org.cohort.repos.Path;
 import org.cohortbackup.persistence.LocalIndexService;
 import org.jboss.seam.transaction.TransactionPropagation;
 import org.jboss.seam.transaction.Transactional;
@@ -18,29 +18,29 @@ import org.primefaces.model.TreeNode;
 public class LocalIndexBean {
     @Inject
     LocalIndexService localIndexService;
-    
+
     @Inject
-    LocalIndex localIndex;
-    
+    Index localIndex;
+
     private File pathToAdd;
     private TreeNode root;
-    
+
     @Transactional(TransactionPropagation.REQUIRED)
     public void addRootPath() {
-        localIndexService.addRootPath(new LocalPath(pathToAdd));
+        localIndexService.addRootPath(new Path(pathToAdd));
     }
 
-    public List<LocalPath> getBackupRoots() {
-        return localIndexService.getLocalIndex().getBackupRoots();
+    public List<Path> getBackupRoots() {
+        return localIndexService.getLocalIndex().getRoots();
     }
-    
+
     public TreeNode getRoot() {
         if (root == null) {
             root = new DefaultTreeNode("root", null);
-            LocalIndex idx = localIndexService.getLocalIndex();
+            Index idx = localIndexService.getLocalIndex();
             idx.getOutOfDatePaths();
-            
-            for (LocalPath p : idx.getBackupRoots()) {
+
+            for (Path p : idx.getRoots()) {
                 root.addChild(new LocalPathTreeNode(p, root));
             }
         }
@@ -54,13 +54,13 @@ public class LocalIndexBean {
     public File getPathToAdd() {
         return pathToAdd;
     }
-    
+
     public static class LocalPathTreeNode extends DefaultTreeNode {
         private static final long serialVersionUID = -1402486364788361866L;
 
-        public LocalPathTreeNode(LocalPath p, TreeNode parent) {
+        public LocalPathTreeNode(Path p, TreeNode parent) {
             super(p, parent);
-            for (LocalPath c : p.getChildren()) {
+            for (Path c : p.getChildren()) {
                 new LocalPathTreeNode(c, this);
             }
         }

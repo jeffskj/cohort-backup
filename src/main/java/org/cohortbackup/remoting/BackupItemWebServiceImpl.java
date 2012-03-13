@@ -10,7 +10,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
 import org.apache.commons.io.IOUtils;
-import org.cohortbackup.backup.LocalRepository;
+import org.cohort.repos.LocalRepository;
 import org.cohortbackup.domain.BackupItem;
 import org.cohortbackup.persistence.BackupItemService;
 import org.jboss.seam.transaction.TransactionPropagation;
@@ -37,12 +37,12 @@ public class BackupItemWebServiceImpl implements BackupItemWebService {
     public void putBackupItem(@PathParam("id") UUID id, BackupItem item) {
         backupItemService.save(item);
     }
-    
+
     public byte[] get(@PathParam("id") UUID id) throws IOException {
         logger.info("getting content for {}", id);
         return IOUtils.toByteArray(repository.getRaw(id));
     }
-    
+
     public String getChecksum(@PathParam("id") UUID id) {
         logger.info("getting checksum for {}", id);
         return repository.getRawChecksum(id);
@@ -54,7 +54,7 @@ public class BackupItemWebServiceImpl implements BackupItemWebService {
         if (item == null) {
             throw new IllegalArgumentException("backup item doesn't exist!");
         }
-        
+
         repository.putRaw(id, new ByteArrayInputStream(contents));
     }
 }

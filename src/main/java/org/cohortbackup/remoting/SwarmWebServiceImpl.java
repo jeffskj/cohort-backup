@@ -12,23 +12,19 @@ import org.cohortbackup.domain.Swarm;
 import org.cohortbackup.persistence.SwarmService;
 
 @ApplicationScoped
-public class SwarmWebServiceImpl implements SwarmWebService
-{
+public class SwarmWebServiceImpl implements SwarmWebService {
     @Inject
     SwarmService swarmService;
-    
-    public Swarm getSwarm(@PathParam("id")UUID id) 
-    {
+
+    public Swarm getSwarm(@PathParam("id") UUID id) {
         return swarmService.getSwarm(id);
     }
-    
-    public Set<Node> getSwarmMembers(@PathParam("id") UUID id) 
-    {
+
+    public Set<Node> getSwarmMembers(@PathParam("id") UUID id) {
         return swarmService.getSwarm(id).getNodes();
     }
-    
-    public void addSwarmMember(@PathParam("id")UUID id, Node node) 
-    {
+
+    public void addSwarmMember(@PathParam("id") UUID id, Node node) {
         swarmService.addNode(id, node);
     }
 

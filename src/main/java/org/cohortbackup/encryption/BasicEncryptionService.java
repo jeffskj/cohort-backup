@@ -13,10 +13,10 @@ import org.jasypt.util.text.BasicTextEncryptor;
 
 @Alternative
 public class BasicEncryptionService implements EncryptionService {
-    
+
     @Override
     public String encrypt(String data, String key) {
-        BasicTextEncryptor encryptor = new BasicTextEncryptor(); 
+        BasicTextEncryptor encryptor = new BasicTextEncryptor();
         encryptor.setPassword(key);
         return encryptor.encrypt(key);
     }

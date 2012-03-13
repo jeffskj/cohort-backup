@@ -16,4 +16,5 @@ import javax.inject.Qualifier;
 @Target({PARAMETER, TYPE, METHOD, FIELD})
 @Retention(RUNTIME)
 @Documented
-public @interface Current {}
+public @interface Current {
+}

@@ -12,11 +12,12 @@ import java.util.zip.GZIPInputStream;
 import javax.inject.Inject;
 
 import org.apache.commons.io.FilenameUtils;
+import org.cohort.repos.Index;
+import org.cohort.repos.LocalRepository;
+import org.cohort.repos.Path;
 import org.cohortbackup.domain.BackupItem;
 import org.cohortbackup.domain.Configuration;
 import org.cohortbackup.domain.Current;
-import org.cohortbackup.domain.LocalIndex;
-import org.cohortbackup.domain.LocalPath;
 import org.cohortbackup.domain.Node;
 import org.cohortbackup.domain.Swarm;
 import org.cohortbackup.encryption.EncryptionService;
@@ -29,34 +30,37 @@ import org.slf4j.LoggerFactory;
 @Transactional
 public class BackupServiceImpl implements BackupService {
     private Logger logger = LoggerFactory.getLogger(getClass());
-    
+
     @Inject
     EncryptionService encryptionService;
 
-    @Inject @Current
+    @Inject
+    @Current
     Configuration config;
 
     @Inject
     LocalRepository repository;
 
     @Inject
-    LocalIndex localIndex;
-    
-    @Inject @Current
+    Index localIndex;
+
+    @Inject
+    @Current
     Node currentNode;
 
-    @Inject @Current
+    @Inject
+    @Current
     Swarm currentSwarm;
 
     @Inject
     BackupItemWebServiceClient backupClient;
-    
+
     @Override
     public void backup() {
-        for (LocalPath path : localIndex.getOutOfDatePaths()) {
+        for (Path path : localIndex.getOutOfDatePaths()) {
             BackupItem awaitingSend = path.getBackupItemAwaitingSend();
             BackupItem backupItem = awaitingSend != null ? awaitingSend : createBackupItem(path);
-            
+
             Node node = findEligibleNode();
             if (node == null) {
                 logger.info("skipping backup of {} because there were no eligible nodes!", path);
@@ -75,7 +79,7 @@ public class BackupServiceImpl implements BackupService {
                 logger.warn("skipping backup of {} because of error!", path, e);
                 continue;
             }
-            
+
         }
     }
 
@@ -92,7 +96,7 @@ public class BackupServiceImpl implements BackupService {
     public void recover(BackupItem backupItem) {
     }
 
-    public BackupItem createBackupItem(LocalPath path) {
+    public BackupItem createBackupItem(Path path) {
         BackupItem backup = new BackupItem();
         backup.setId(UUID.randomUUID());
         backup.setSize(path.getFile().length());
@@ -107,11 +111,11 @@ public class BackupServiceImpl implements BackupService {
             throw new RuntimeException(e);
         }
     }
-    
+
     InputStream encrypt(InputStream in) {
         return encryptionService.encrypt(in, config.getEncryptionKey());
     }
-    
+
     public void recover(BackupItem backupItem, File destination, String key) {
         try {
             InputStream localFile = repository.get(backupItem.getId());

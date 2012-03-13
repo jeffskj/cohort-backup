@@ -15,28 +15,27 @@ import javax.ws.rs.core.MediaType;
 import org.cohortbackup.domain.BackupItem;
 
 @Path("/backup")
-public interface BackupItemWebService
-{
+public interface BackupItemWebService {
     @POST
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_XML)
     void putBackupItem(@PathParam("id") UUID id, BackupItem item);
-    
+
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_XML)
-    BackupItem getBackupItem(@PathParam("id") UUID id); 
-    
+    BackupItem getBackupItem(@PathParam("id") UUID id);
+
     @GET
     @Path("/{id}/contents")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     byte[] get(@PathParam("id") UUID id) throws IOException;
-    
+
     @GET
     @Path("/{id}/checksum")
     @Produces(MediaType.TEXT_PLAIN)
     String getChecksum(@PathParam("id") UUID id) throws IOException;
-    
+
     @PUT
     @Path("/{id}/contents")
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)

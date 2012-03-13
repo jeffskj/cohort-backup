@@ -1,4 +1,4 @@
-package org.cohortbackup.domain;
+package org.cohort.repos;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -7,45 +7,37 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlAdapter;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.cohortbackup.domain.BackupItem;
 
 import com.google.common.collect.Sets;
 
-@Entity
-public class LocalPath {
-    @Id
-    @GeneratedValue
-    private long id;
-
+@XmlAccessorType(XmlAccessType.FIELD)
+public class Path {
     private int priority = -1;
+    
+    @XmlJavaTypeAdapter(PathXmlAdapter.class)
     private File file;
 
-    @OneToMany(cascade = CascadeType.ALL)
     private List<BackupItem> backupItems;
+    private Path parent;
+    private List<Path> children;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    private LocalPath parent;
-
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
-    private List<LocalPath> children;
-
-    public LocalPath(File path, LocalPath parent) {
+    public Path(File path, Path parent) {
         file = path;
         this.parent = parent;
     }
 
-    public LocalPath(File path) {
+    public Path(File path) {
         this(path, null);
     }
 
-    public LocalPath() {
+    public Path() {
     }
 
     /**
@@ -57,18 +49,18 @@ public class LocalPath {
         }
 
         Set<File> knownChildren = new HashSet<File>();
-        for (LocalPath child : getChildren()) {
+        for (Path child : getChildren()) {
             knownChildren.add(child.getFile());
         }
 
         Set<File> actualChildren = Sets.newHashSet(file.listFiles());
         actualChildren.removeAll(knownChildren);
-        
+
         for (File file : actualChildren) {
-            getChildren().add(new LocalPath(file, this));
+            getChildren().add(new Path(file, this));
         }
 
-        for (LocalPath child : getChildren()) {
+        for (Path child : getChildren()) {
             child.refreshChildren();
         }
     }
@@ -81,17 +73,19 @@ public class LocalPath {
         return backupItems != null && !backupItems.isEmpty()
                 && backupItems.get(backupItems.size() - 1).getBackupDate() != null;
     }
-    
+
     public BackupItem getBackupItemAwaitingSend() {
-        if (backupItems == null) { return null; }
-        
+        if (backupItems == null) {
+            return null;
+        }
+
         for (BackupItem bi : backupItems) {
             if (bi.getBackupDate() == null) {
                 return bi;
             }
         }
-        
-        return null;        
+
+        return null;
     }
 
     public List<BackupItem> getBackupItems() {
@@ -102,16 +96,16 @@ public class LocalPath {
         this.backupItems = backupItems;
     }
 
-    public LocalPath getParent() {
+    public Path getParent() {
         return parent;
     }
 
-    public void setParent(LocalPath parent) {
+    public void setParent(Path parent) {
         this.parent = parent;
     }
 
-    public LocalPath getChild(String name) {
-        for (LocalPath child : children) {
+    public Path getChild(String name) {
+        for (Path child : children) {
             if (child.file.getName().equals(name)) {
                 return child;
             }
@@ -120,14 +114,14 @@ public class LocalPath {
         return null;
     }
 
-    public List<LocalPath> getChildren() {
+    public List<Path> getChildren() {
         if (children == null) {
-            children = new ArrayList<LocalPath>();
+            children = new ArrayList<Path>();
         }
         return children;
     }
 
-    public void setChildren(List<LocalPath> children) {
+    public void setChildren(List<Path> children) {
         this.children = children;
     }
 
@@ -148,14 +142,6 @@ public class LocalPath {
         return lastBackup == null || lastBackup.before(new Date(file.lastModified()));
     }
 
-    protected void setId(long id) {
-        this.id = id;
-    }
-
-    protected long getId() {
-        return id;
-    }
-
     public void setPriority(int priority) {
         this.priority = priority;
     }
@@ -170,5 +156,17 @@ public class LocalPath {
     @Override
     public String toString() {
         return new ToStringBuilder(this).append(file).toString();
+    }
+    
+    private static class PathXmlAdapter extends XmlAdapter<String, File> {
+        @Override
+        public File unmarshal(String v) throws Exception {
+            return new File(v);
+        }
+
+        @Override
+        public String marshal(File v) throws Exception {
+            return v.getAbsolutePath();
+        }        
     }
 }

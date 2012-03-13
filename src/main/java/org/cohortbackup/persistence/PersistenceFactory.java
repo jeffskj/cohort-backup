@@ -10,7 +10,7 @@ import org.jboss.seam.solder.core.ExtensionManaged;
 public class PersistenceFactory {
     @ExtensionManaged
     @Produces
-    @PersistenceUnit(unitName="cohort")
+    @PersistenceUnit(unitName = "cohort")
     @RequestScoped
     EntityManagerFactory producerField;
 }

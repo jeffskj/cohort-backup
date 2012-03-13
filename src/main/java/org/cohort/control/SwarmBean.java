@@ -19,14 +19,15 @@ public class SwarmBean {
 
     @Inject
     SwarmService swarmService;
-    
-    @Inject @New
+
+    @Inject
+    @New
     private Node node;
-    
+
     public Swarm getSwarm() {
         return swarmService.getCurrentSwarm();
     }
-    
+
     @Transactional
     public void addMember() {
         Swarm swarm = getSwarm();
@@ -41,7 +42,7 @@ public class SwarmBean {
     public Node getNode() {
         return node;
     }
-    
+
     public List<Node> getCurrentNodes() {
         return Lists.newArrayList(getSwarm().getNodes());
     }

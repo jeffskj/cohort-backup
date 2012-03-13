@@ -10,7 +10,7 @@ import org.jboss.seam.transaction.Transactional;
 public class BackupBean {
     @Inject
     BackupService backupService;
-    
+
     @Transactional
     public void backup() {
         backupService.backup();

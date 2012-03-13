@@ -12,7 +12,8 @@ import org.jboss.seam.transaction.Transactional;
 @RequestScoped
 public class BackupItemServiceImpl implements BackupItemService {
 
-    @Inject EntityManager em;
+    @Inject
+    EntityManager em;
 
     @Override
     public BackupItem getBackupItem(UUID id) {

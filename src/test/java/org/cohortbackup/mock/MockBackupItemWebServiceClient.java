@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 
 public class MockBackupItemWebServiceClient implements BackupItemWebServiceClient {
     Logger logger = LoggerFactory.getLogger(getClass());
-    
+
     @Override
     public BackupItem getBackupItem(Node from, UUID backupItemId) {
         return null;

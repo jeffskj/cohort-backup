@@ -9,7 +9,7 @@ public class BackupItemCreatedEvent {
     public BackupItemCreatedEvent(BackupItem backupItem) {
         this.backupItem = backupItem;
     }
-    
+
     public BackupItem getBackupItem() {
         return backupItem;
     }
