@@ -8,8 +8,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import org.cohort.repos.Index;
-import org.cohort.repos.Path;
 import org.cohortbackup.domain.BackupItem;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -74,7 +72,7 @@ public class IndexTest {
         Path foo = path.getChild("sub").getChild("foo.txt");
         BackupItem backupItem = new BackupItem();
         backupItem.setBackupDate(new Date());
-        foo.setBackupItems(Arrays.asList(backupItem));
+        foo.getBackupItems().add(backupItem);
 
         Index index = new Index(Arrays.asList(path));
 

@@ -7,25 +7,36 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.cohortbackup.domain.BackupItem;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
+@XmlRootElement(name="path")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Path {
     private int priority = -1;
     
+    @XmlTransient
+    private Path parent;
+    
     @XmlJavaTypeAdapter(PathXmlAdapter.class)
     private File file;
 
-    private List<BackupItem> backupItems;
-    private Path parent;
+    @XmlElement(name="backup")
+    private List<BackupItem> backupItems = Lists.newArrayList();
+    
+    @XmlElement(name="path")
     private List<Path> children;
 
     public Path(File path, Path parent) {
@@ -70,8 +81,7 @@ public class Path {
     }
 
     public boolean isBackedUp() {
-        return backupItems != null && !backupItems.isEmpty()
-                && backupItems.get(backupItems.size() - 1).getBackupDate() != null;
+        return !backupItems.isEmpty() && backupItems.get(backupItems.size() - 1).getBackupDate() != null;
     }
 
     public BackupItem getBackupItemAwaitingSend() {
@@ -90,10 +100,6 @@ public class Path {
 
     public List<BackupItem> getBackupItems() {
         return backupItems;
-    }
-
-    public void setBackupItems(List<BackupItem> backupItems) {
-        this.backupItems = backupItems;
     }
 
     public Path getParent() {
@@ -156,6 +162,16 @@ public class Path {
     @Override
     public String toString() {
         return new ToStringBuilder(this).append(file).toString();
+    }
+    
+    @Deprecated 
+    /**
+     * not actually deprecated, just wanted to hide it from type completion
+     */
+    public void afterUnmarshal(Unmarshaller u, Object parent) {
+        if (parent instanceof Path) {
+            this.parent = (Path) parent;
+        }
     }
     
     private static class PathXmlAdapter extends XmlAdapter<String, File> {

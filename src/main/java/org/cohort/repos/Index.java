@@ -14,7 +14,7 @@ import com.google.common.collect.Lists;
 @XmlRootElement
 public class Index {
     
-    @XmlElement
+    @XmlElement(name="path")
     private List<Path> roots = Lists.newArrayList();
 
     public Index() { // to placate weld

@@ -10,13 +10,10 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.UUID;
 
-import org.cohort.repos.Path;
 import org.cohortbackup.domain.BackupItem;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-
-import com.google.common.collect.Lists;
 
 public class PathTest {
     @Rule
@@ -57,7 +54,7 @@ public class PathTest {
     public void checksIfBackedUp() throws IOException {
         Path bar = new Path(folder.newFile("bar.txt"));
         assertFalse(bar.isBackedUp());
-        bar.setBackupItems(Lists.newArrayList(new BackupItem()));
+        bar.getBackupItems().add(new BackupItem());
         bar.getBackupItems().get(0).setBackupDate(new Date());
         assertTrue(bar.isBackedUp());
     }
@@ -68,7 +65,7 @@ public class PathTest {
         assertTrue(bar.isOutOfDate());
         BackupItem backupItem = new BackupItem();
         backupItem.setBackupDate(new Date());
-        bar.setBackupItems(Lists.newArrayList(backupItem));
+        bar.getBackupItems().add(backupItem);
         assertFalse(bar.isOutOfDate());
 
         bar.getFile().setLastModified(System.currentTimeMillis() + 1000);

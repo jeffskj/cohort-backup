@@ -3,7 +3,6 @@ package org.cohortbackup.domain;
 import java.util.Date;
 import java.util.UUID;
 
-import javax.persistence.Entity;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,8 +12,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
-@Entity
-@XmlRootElement
+@XmlRootElement(name="backup")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class BackupItem {
     private UUID id;
