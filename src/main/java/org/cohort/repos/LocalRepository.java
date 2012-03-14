@@ -3,9 +3,11 @@ package org.cohort.repos;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.UUID;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -21,6 +23,7 @@ public class LocalRepository {
     private final File root;
     private Index index;
     private File metadata;
+    private File indexFile;
 
     public LocalRepository(File root) {
         this.root = root;
@@ -29,8 +32,9 @@ public class LocalRepository {
 
     private void initialize(File root) {
         metadata = new File(root, "metadata");
+        indexFile = new File(metadata, ".index");
         try {
-            index = loadIndex(metadata);
+            loadIndex();
         } catch (IOException e) {
             throw new RuntimeException("error initializing index", e);
         }
@@ -42,7 +46,7 @@ public class LocalRepository {
     }
 
     public InputStream get(UUID id) throws IOException {
-        return new BufferedInputStream(new GZIPInputStream(new FileInputStream((getRepositoryFile(id)))));
+        return gzipInputStream(getRepositoryFile(id));
     }
 
     /**
@@ -86,18 +90,27 @@ public class LocalRepository {
         return index;
     }
 
-    private static Index loadIndex(File metadata) throws IOException {
-        File indexFile = new File(metadata, ".index");
-        if (!indexFile.exists()) {
+    private void loadIndex() throws IOException {
+        if (!indexFile.exists() || indexFile.length() == 0) {
             FileUtils.touch(indexFile);
-            JAXB.marshal(new Index(), indexFile);
-        }
-        
-        return JAXB.unmarshal(indexFile, Index.class);
+            index = new Index();
+        } else {
+            index = JAXB.unmarshal(gzipInputStream(indexFile), Index.class);
+        }        
     }
 
-    public void saveIndex() {
-        File indexFile = new File(metadata, ".index");
-        JAXB.marshal(index, indexFile);
+    public void saveIndex() throws IOException {
+        OutputStream outputStream = gzipOutputStream(indexFile);
+        JAXB.marshal(index, outputStream);
+        outputStream.flush();
+        outputStream.close();
+    }
+    
+    private InputStream gzipInputStream(File f) throws FileNotFoundException, IOException {
+        return new GZIPInputStream(new FileInputStream(f), BUFFER_SIZE);
+    }
+    
+    private OutputStream gzipOutputStream(File f) throws FileNotFoundException, IOException {
+        return new GZIPOutputStream(new FileOutputStream(f), BUFFER_SIZE);
     }
 }
