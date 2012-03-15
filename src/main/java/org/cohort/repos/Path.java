@@ -84,20 +84,6 @@ public class Path {
         return !backupItems.isEmpty() && backupItems.get(backupItems.size() - 1).getBackupDate() != null;
     }
 
-    public BackupItem getBackupItemAwaitingSend() {
-        if (backupItems == null) {
-            return null;
-        }
-
-        for (BackupItem bi : backupItems) {
-            if (bi.getBackupDate() == null) {
-                return bi;
-            }
-        }
-
-        return null;
-    }
-
     public List<BackupItem> getBackupItems() {
         return backupItems;
     }

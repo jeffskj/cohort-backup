@@ -12,7 +12,9 @@ import java.util.zip.GZIPInputStream;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.math.RandomUtils;
+import org.cohortbackup.domain.BackupClient;
 import org.cohortbackup.domain.BackupItem;
+import org.cohortbackup.domain.BackupLocation;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -22,7 +24,7 @@ public class LocalRepositoryTest {
     public TemporaryFolder tmp = new TemporaryFolder();
     
     @Test
-    public void canInitializeALocalRepo() throws IOException {
+    public void canSaveAndLoadIndex() throws IOException {
         LocalRepository repos = new LocalRepository(tmp.getRoot());
         assertEquals(0, repos.getIndex().getRoots().size());
         
@@ -55,6 +57,32 @@ public class LocalRepositoryTest {
         
         assertEquals(2, repos.getIndex().getRoots().size());        
     }
+    
+    @Test
+    public void canSaveAndLoadBackupLog() throws IOException {
+        LocalRepository repos = new LocalRepository(tmp.getRoot());
+        BackupLog log = repos.getBackupLog();
+        assertEquals(0, log.getLogEntries().size());
+        int numEntries = 1000;
+        
+        for (int i = 0; i < numEntries; i++) {
+            log.addEntry(createBackupItem(), new MockBackupLocation());
+        }
+        assertEquals(numEntries, log.getLogEntries().size());
+        repos.saveBackupLog();
+        
+        File indexFile = new File(tmp.getRoot(), "metadata/.backuplog");
+//        System.out.println(FileUtils.readFileToString(indexFile));
+        System.out.println("length: " + indexFile.length());
+        String indexString = IOUtils.toString(new GZIPInputStream(new FileInputStream(indexFile)));
+        System.out.println("raw length: " + indexString.getBytes().length);
+//        System.out.println(indexString);
+        
+        assertTrue(indexFile.length() > 0);
+        repos = new LocalRepository(tmp.getRoot());
+        
+        assertEquals(numEntries, repos.getBackupLog().getLogEntries().size());        
+    }
 
     private BackupItem createBackupItem() {
         BackupItem backupItem = new BackupItem();
@@ -63,5 +91,17 @@ public class LocalRepositoryTest {
         backupItem.setBackupDate(new Date());
         backupItem.setVersion(RandomUtils.nextInt(100));
         return backupItem;
+    }
+    
+    private static class MockBackupLocation implements BackupLocation {
+        @Override
+        public UUID getId() {
+            return UUID.randomUUID();
+        }
+
+        @Override
+        public BackupClient getBackupClient() {
+            return null;
+        }
     }
 }
