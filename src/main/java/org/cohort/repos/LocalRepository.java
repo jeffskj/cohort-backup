@@ -24,6 +24,8 @@ public class LocalRepository {
     private Index index;
     private File metadata;
     private File indexFile;
+    private BackupLog backupLog;
+    private File backupLogFile;
 
     public LocalRepository(File root) {
         this.root = root;
@@ -33,8 +35,10 @@ public class LocalRepository {
     private void initialize(File root) {
         metadata = new File(root, "metadata");
         indexFile = new File(metadata, ".index");
+        backupLogFile = new File(metadata, ".backuplog");
         try {
             loadIndex();
+            loadBackupLog();
         } catch (IOException e) {
             throw new RuntimeException("error initializing index", e);
         }
@@ -90,6 +94,24 @@ public class LocalRepository {
         return index;
     }
 
+    public BackupLog getBackupLog() {
+        return backupLog;
+    }
+    
+    public void saveIndex() throws IOException {
+        OutputStream outputStream = gzipOutputStream(indexFile);
+        JAXB.marshal(index, outputStream);
+        outputStream.flush();
+        outputStream.close();
+    }
+    
+    public void saveBackupLog() throws IOException {
+        OutputStream outputStream = gzipOutputStream(backupLogFile);
+        JAXB.marshal(backupLog, outputStream);
+        outputStream.flush();
+        outputStream.close();
+    }
+    
     private void loadIndex() throws IOException {
         if (!indexFile.exists() || indexFile.length() == 0) {
             FileUtils.touch(indexFile);
@@ -99,12 +121,15 @@ public class LocalRepository {
         }        
     }
 
-    public void saveIndex() throws IOException {
-        OutputStream outputStream = gzipOutputStream(indexFile);
-        JAXB.marshal(index, outputStream);
-        outputStream.flush();
-        outputStream.close();
+    private void loadBackupLog() throws IOException {
+        if (!backupLogFile.exists() || backupLogFile.length() == 0) {
+            FileUtils.touch(backupLogFile);
+            backupLog = new BackupLog();
+        } else {
+            backupLog = JAXB.unmarshal(gzipInputStream(backupLogFile), BackupLog.class);
+        }        
     }
+    
     
     private InputStream gzipInputStream(File f) throws FileNotFoundException, IOException {
         return new GZIPInputStream(new FileInputStream(f), BUFFER_SIZE);
