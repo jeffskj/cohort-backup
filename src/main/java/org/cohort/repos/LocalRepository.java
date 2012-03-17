@@ -16,16 +16,19 @@ import javax.xml.bind.JAXB;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.cohortbackup.domain.Configuration;
 import org.cohortbackup.util.ChecksumUtils;
 
 public class LocalRepository {
     private static final int BUFFER_SIZE = 4096;
     private final File root;
     private Index index;
-    private File metadata;
-    private File indexFile;
     private BackupLog backupLog;
+    private Configuration config;
+    private File indexFile;
+    private File metadata;
     private File backupLogFile;
+    private File configFile;
 
     public LocalRepository(File root) {
         this.root = root;
@@ -34,9 +37,11 @@ public class LocalRepository {
 
     private void initialize(File root) {
         metadata = new File(root, "metadata");
+        configFile = new File(metadata, ".config");
         indexFile = new File(metadata, ".index");
         backupLogFile = new File(metadata, ".backuplog");
         try {
+            loadConfig();
             loadIndex();
             loadBackupLog();
         } catch (IOException e) {
@@ -98,38 +103,50 @@ public class LocalRepository {
         return backupLog;
     }
     
+    public Configuration getConfig() {
+        return config;
+    }
+    
     public void saveIndex() throws IOException {
-        OutputStream outputStream = gzipOutputStream(indexFile);
-        JAXB.marshal(index, outputStream);
-        outputStream.flush();
-        outputStream.close();
+        saveToFile(indexFile, index);
     }
     
     public void saveBackupLog() throws IOException {
-        OutputStream outputStream = gzipOutputStream(backupLogFile);
-        JAXB.marshal(backupLog, outputStream);
-        outputStream.flush();
-        outputStream.close();
+        saveToFile(backupLogFile, backupLog);
+    }
+    
+    public void saveConfig() throws IOException {
+        saveToFile(configFile, config);
     }
     
     private void loadIndex() throws IOException {
-        if (!indexFile.exists() || indexFile.length() == 0) {
-            FileUtils.touch(indexFile);
-            index = new Index();
-        } else {
-            index = JAXB.unmarshal(gzipInputStream(indexFile), Index.class);
-        }        
+        index = loadFromFile(indexFile, new Index());
     }
 
     private void loadBackupLog() throws IOException {
-        if (!backupLogFile.exists() || backupLogFile.length() == 0) {
-            FileUtils.touch(backupLogFile);
-            backupLog = new BackupLog();
-        } else {
-            backupLog = JAXB.unmarshal(gzipInputStream(backupLogFile), BackupLog.class);
-        }        
+        backupLog = loadFromFile(backupLogFile, new BackupLog());
     }
     
+    private void loadConfig() throws IOException {
+        config = loadFromFile(configFile, new Configuration());        
+    }
+    
+    @SuppressWarnings("unchecked")
+    private <T> T loadFromFile(File f, T defaultValue) throws IOException {
+        if (!f.exists() || f.length() == 0) {
+            FileUtils.touch(f);
+            return defaultValue;
+        } else {
+            return (T) JAXB.unmarshal(gzipInputStream(f), defaultValue.getClass());
+        }           
+    }
+    
+    private void saveToFile(File f, Object o) throws FileNotFoundException, IOException {
+        OutputStream outputStream = gzipOutputStream(f);
+        JAXB.marshal(o, outputStream);
+        outputStream.flush();
+        outputStream.close();
+    }
     
     private InputStream gzipInputStream(File f) throws FileNotFoundException, IOException {
         return new GZIPInputStream(new FileInputStream(f), BUFFER_SIZE);

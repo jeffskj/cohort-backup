@@ -1,9 +1,13 @@
 package org.cohort.repos;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -16,6 +20,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.cohortbackup.domain.BackupItem;
 
@@ -34,7 +39,7 @@ public class Path {
     private File file;
 
     @XmlElement(name="backup")
-    private List<BackupItem> backupItems = Lists.newArrayList();
+    private LinkedList<BackupItem> backupItems = Lists.newLinkedList();
     
     @XmlElement(name="path")
     private List<Path> children;
@@ -81,7 +86,7 @@ public class Path {
     }
 
     public boolean isBackedUp() {
-        return !backupItems.isEmpty() && backupItems.get(backupItems.size() - 1).getBackupDate() != null;
+        return !backupItems.isEmpty();
     }
 
     public List<BackupItem> getBackupItems() {
@@ -117,6 +122,10 @@ public class Path {
         this.children = children;
     }
 
+    public boolean isFile() {
+        return file.isFile();
+    }
+    
     public void setFile(File path) {
         file = path;
     }
@@ -124,13 +133,17 @@ public class Path {
     public File getFile() {
         return file;
     }
+    
+    public boolean isAwaitingSend() {
+        return backupItems.peekLast().getBackupDate() != null;
+    }
 
     public boolean isOutOfDate() {
         if (!isBackedUp()) {
             return true;
         }
 
-        Date lastBackup = backupItems.get(backupItems.size() - 1).getBackupDate();
+        Date lastBackup = backupItems.peekLast().getBackupDate();
         return lastBackup == null || lastBackup.before(new Date(file.lastModified()));
     }
 
@@ -145,6 +158,10 @@ public class Path {
         return priority;
     }
 
+    public InputStream openStream() throws IOException {
+        return new BufferedInputStream(FileUtils.openInputStream(file));
+    }
+    
     @Override
     public String toString() {
         return new ToStringBuilder(this).append(file).toString();

@@ -28,11 +28,20 @@ public class Index {
         return depthFirstSearch(new Predicate<Path>() {
             @Override
             public boolean apply(Path path) {
-                return path.isOutOfDate() && path.getFile().isFile();
+                return path.isOutOfDate() && path.isFile();
             }
         });
     }
 
+    public List<Path> getUnsentPaths() {
+        return depthFirstSearch(new Predicate<Path>() {
+            @Override
+            public boolean apply(Path path) {
+                return path.isAwaitingSend() && path.isFile();
+            }
+        });
+    }
+    
     public List<Path> getDeletedPaths() {
         return depthFirstSearch(new Predicate<Path>() {
             @Override

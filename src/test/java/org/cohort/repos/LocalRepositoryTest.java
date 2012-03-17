@@ -2,6 +2,7 @@ package org.cohort.repos;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertNull;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,6 +23,19 @@ import org.junit.rules.TemporaryFolder;
 public class LocalRepositoryTest {
     @Rule
     public TemporaryFolder tmp = new TemporaryFolder();
+    
+    @Test
+    public void canSaveAndLoadConfiguration() throws IOException {
+        LocalRepository repos = new LocalRepository(tmp.getRoot());
+        assertNull(repos.getConfig().getEncryptionKey());
+        
+        String key = "this is a test";
+        repos.getConfig().setEncryptionKey(key);
+        repos.saveConfig();
+        
+        repos = new LocalRepository(tmp.getRoot());
+        assertEquals(key, repos.getConfig().getEncryptionKey());
+    }
     
     @Test
     public void canSaveAndLoadIndex() throws IOException {
@@ -83,7 +97,7 @@ public class LocalRepositoryTest {
         
         assertEquals(numEntries, repos.getBackupLog().getLogEntries().size());        
     }
-
+    
     private BackupItem createBackupItem() {
         BackupItem backupItem = new BackupItem();
         backupItem.setId(UUID.randomUUID());
