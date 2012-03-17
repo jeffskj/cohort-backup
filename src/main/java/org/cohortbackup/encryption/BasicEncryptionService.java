@@ -45,7 +45,13 @@ public class BasicEncryptionService implements EncryptionService {
 
     @Override
     public InputStream decrypt(InputStream data, String key) {
-        throw new UnsupportedOperationException();
+        BasicBinaryEncryptor encryptor = new BasicBinaryEncryptor();
+        encryptor.setPassword(key);
+        try {
+            return new ByteArrayInputStream(encryptor.decrypt(IOUtils.toByteArray(data)));
+        } catch (IOException e) {
+            throw new EncryptionException(e);
+        }
     }
 
 }

@@ -1,10 +1,14 @@
 package org.cohortbackup.backup;
 
-import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.UUID;
+import java.util.zip.Deflater;
+import java.util.zip.DeflaterInputStream;
+import java.util.zip.Inflater;
+import java.util.zip.InflaterInputStream;
 
 import javax.inject.Inject;
 
@@ -21,6 +25,7 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class BackupServiceImpl implements BackupService {
+    private static final int BUFFER_SIZE = 4096;
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Inject
@@ -31,15 +36,25 @@ public class BackupServiceImpl implements BackupService {
         for (Path path : repos.getIndex().getOutOfDatePaths()) {
             BackupItem item = createBackupItem(path);
             logger.info("creating backup item {} for path {}", item.getId(), path);
-            repos.put(item.getId(), encrypt(path.openStream(), repos.getConfig().getEncryptionKey()));
+            path.getBackupItems().add(item);
+            repos.put(item.getId(), encryptionService.encrypt(gzip(path.openStream()), repos.getConfig().getEncryptionKey()));
         }
     }
 
     @Override
-    public void recover(LocalRepository repos, BackupItem backupItem) {
+    public InputStream recover(LocalRepository repos, BackupItem backupItem) throws IOException {
+            return unzip(encryptionService.decrypt(repos.get(backupItem.getId()), repos.getConfig().getEncryptionKey()));
     }
 
-    public BackupItem createBackupItem(Path path) {
+    private InputStream unzip(InputStream is) throws IOException {
+        return new InflaterInputStream(is, new Inflater(),BUFFER_SIZE);
+    }
+    
+    private InputStream gzip(InputStream is) throws FileNotFoundException, IOException {
+        return new DeflaterInputStream(is, new Deflater(9), BUFFER_SIZE);
+    }
+    
+    private BackupItem createBackupItem(Path path) {
         BackupItem backup = new BackupItem();
         backup.setId(UUID.randomUUID());
         backup.setSize(path.getFile().length());
@@ -47,19 +62,4 @@ public class BackupServiceImpl implements BackupService {
         backup.setBackupDate(new Date());
         return backup;
     }
-
-    InputStream encrypt(InputStream in, String key) {
-        return encryptionService.encrypt(in, key);
-    }
-
-    public void recover(BackupItem backupItem, File destination, String key) {
-//        try {
-//            InputStream localFile = repository.get(backupItem.getId());
-//            GZIPInputStream in = new GZIPInputStream(encryptionService.decrypt(localFile, config.getEncryptionKey()));
-//            IOUtils.copy(in, new FileOutputStream(destination));
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-    }
-
 }

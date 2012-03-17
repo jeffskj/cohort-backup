@@ -54,16 +54,12 @@ public class LocalRepository {
         return f.exists() ? f : null;
     }
 
-    public InputStream get(UUID id) throws IOException {
-        return gzipInputStream(getRepositoryFile(id));
-    }
-
     /**
      * @param id
      * @return stream of data in repository in its compressed form
      * @throws IOException
      */
-    public InputStream getRaw(UUID id) throws IOException {
+    public InputStream get(UUID id) throws IOException {
         return new BufferedInputStream(new FileInputStream((getRepositoryFile(id))));
     }
 
@@ -74,13 +70,8 @@ public class LocalRepository {
      * @param input
      * @throws IOException
      */
-    public void putRaw(UUID id, InputStream input) throws IOException {
-        IOUtils.copy(input, new FileOutputStream(getRepositoryFile(id)));
-    }
-
     public void put(UUID id, InputStream input) throws IOException {
-        FileOutputStream fileOutput = new FileOutputStream(getRepositoryFile(id));
-        IOUtils.copy(input, new GZIPOutputStream(fileOutput, BUFFER_SIZE));
+        IOUtils.copy(input, new FileOutputStream(getRepositoryFile(id)));
     }
 
     public void remove(UUID id) {
