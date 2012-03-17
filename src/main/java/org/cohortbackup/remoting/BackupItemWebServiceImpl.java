@@ -1,6 +1,5 @@
 package org.cohortbackup.remoting;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.UUID;
 
@@ -9,7 +8,6 @@ import javax.inject.Inject;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
-import org.apache.commons.io.IOUtils;
 import org.cohort.repos.LocalRepository;
 import org.cohortbackup.domain.BackupItem;
 import org.cohortbackup.persistence.BackupItemService;
@@ -40,7 +38,8 @@ public class BackupItemWebServiceImpl implements BackupItemWebService {
 
     public byte[] get(@PathParam("id") UUID id) throws IOException {
         logger.info("getting content for {}", id);
-        return IOUtils.toByteArray(repository.getRaw(id));
+//        return IOUtils.toByteArray(repository.getRaw(id));
+        return null;
     }
 
     public String getChecksum(@PathParam("id") UUID id) {
@@ -55,6 +54,6 @@ public class BackupItemWebServiceImpl implements BackupItemWebService {
             throw new IllegalArgumentException("backup item doesn't exist!");
         }
 
-        repository.putRaw(id, new ByteArrayInputStream(contents));
+//        repository.putRaw(id, new ByteArrayInputStream(contents));
     }
 }

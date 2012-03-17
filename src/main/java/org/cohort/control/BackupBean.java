@@ -13,6 +13,6 @@ public class BackupBean {
 
     @Transactional
     public void backup() {
-        backupService.backup();
+//        backupService.backup();
     }
 }

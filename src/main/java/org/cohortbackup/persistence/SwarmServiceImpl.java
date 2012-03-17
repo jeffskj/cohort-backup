@@ -45,7 +45,7 @@ public class SwarmServiceImpl implements SwarmService {
 
         if (getCurrentSwarm() == null) {
             Swarm s = new Swarm();
-            s.setId(config.getSwarmId());
+//            s.setId(config.getSwarmId());
             Node currentNode = getCurrentNode();
             s.getNodes().add(currentNode);
             currentNode.setSwarm(s);
@@ -62,14 +62,16 @@ public class SwarmServiceImpl implements SwarmService {
     @Produces
     @Current
     public Swarm getCurrentSwarm() {
-        return getSwarm(config.getSwarmId());
+        return null;
+//        return getSwarm(config.getSwarmId());
     }
 
     @Override
     @Produces
     @Current
     public Node getCurrentNode() {
-        return em.find(Node.class, config.getNodeId());
+        return null;
+//        return em.find(Node.class, config.getNodeId());
     }
 
     public void addNode(UUID swarmId, Node node) {
@@ -112,7 +114,7 @@ public class SwarmServiceImpl implements SwarmService {
         coordinatorClient.addSwarmMember(swarmId, getCurrentNode());
         Swarm currentSwarm = getCurrentSwarm();
         if (!currentSwarm.equals(swarm)) {
-            config.setSwarmId(swarmId);
+//            config.setSwarmId(swarmId);
             em.persist(swarm);
 
             Node currentNode = getCurrentNode();

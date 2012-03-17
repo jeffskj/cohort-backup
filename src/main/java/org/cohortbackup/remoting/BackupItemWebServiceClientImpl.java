@@ -1,6 +1,5 @@
 package org.cohortbackup.remoting;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
@@ -9,7 +8,6 @@ import java.util.UUID;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.apache.commons.io.IOUtils;
 import org.cohort.repos.LocalRepository;
 import org.cohortbackup.domain.BackupItem;
 import org.cohortbackup.domain.Node;
@@ -34,7 +32,7 @@ public class BackupItemWebServiceClientImpl implements BackupItemWebServiceClien
     public InputStream getContents(Node from, UUID id) throws IOException {
         for (int attempts = 0; attempts < MAX_ATTEMPTS; attempts++) {
             try {
-                repository.putRaw(id, new ByteArrayInputStream(getProxy(from).get(id)));
+//                repository.putRaw(id, new ByteArrayInputStream(getProxy(from).get(id)));
                 String actualChecksum = repository.getRawChecksum(id);
                 String requiredChecksum = getProxy(from).getChecksum(id);
 
@@ -61,7 +59,7 @@ public class BackupItemWebServiceClientImpl implements BackupItemWebServiceClien
         for (int attempts = 0; attempts < MAX_ATTEMPTS; attempts++) {
             BackupItemWebService proxy = getProxy(to);
             try {
-                proxy.put(id, IOUtils.toByteArray(repository.getRaw(id)));
+//                proxy.put(id, IOUtils.toByteArray(repository.getRaw(id)));
 
                 String requiredChecksum = repository.getRawChecksum(id);
                 String actualChecksum = getProxy(to).getChecksum(id);

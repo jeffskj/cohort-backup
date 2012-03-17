@@ -47,7 +47,7 @@ public class BackupServiceImpl implements BackupService {
     }
 
     private InputStream unzip(InputStream is) throws IOException {
-        return new InflaterInputStream(is, new Inflater(),BUFFER_SIZE);
+        return new InflaterInputStream(is, new Inflater(), BUFFER_SIZE);
     }
     
     private InputStream gzip(InputStream is) throws FileNotFoundException, IOException {
