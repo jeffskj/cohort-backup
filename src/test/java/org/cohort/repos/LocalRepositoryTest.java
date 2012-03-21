@@ -12,10 +12,10 @@ import java.util.UUID;
 import java.util.zip.GZIPInputStream;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.math.RandomUtils;
-import org.cohortbackup.domain.BackupClient;
+import org.cohortbackup.backup.SkydriveBackupLocation;
 import org.cohortbackup.domain.BackupItem;
-import org.cohortbackup.domain.BackupLocation;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -31,10 +31,28 @@ public class LocalRepositoryTest {
         
         String key = "this is a test";
         repos.getConfig().setEncryptionKey(key);
+        
+        SkydriveBackupLocation location1 = new SkydriveBackupLocation();
+        location1.setId(UUID.randomUUID());
+        location1.setApiToken(RandomStringUtils.randomAlphanumeric(20));
+        location1.setUsername("location1");
+        
+        SkydriveBackupLocation location2 = new SkydriveBackupLocation();
+        location2.setId(UUID.randomUUID());
+        location2.setApiToken(RandomStringUtils.randomAlphanumeric(20));
+        location2.setUsername("location2");
+        
+        repos.getConfig().addBackupLocation(location1);
+        repos.getConfig().addBackupLocation(location2);
         repos.saveConfig();
+        
+        File configFile = new File(tmp.getRoot(), "metadata/.config");
+        String configString = IOUtils.toString(new GZIPInputStream(new FileInputStream(configFile)));
+        System.out.println(configString);
         
         repos = new LocalRepository(tmp.getRoot());
         assertEquals(key, repos.getConfig().getEncryptionKey());
+//        assertEquals(2, repos.getConfig().getBackupLocations().size());
     }
     
     @Test
@@ -80,7 +98,9 @@ public class LocalRepositoryTest {
         int numEntries = 1000;
         
         for (int i = 0; i < numEntries; i++) {
-            log.addEntry(createBackupItem(), new MockBackupLocation());
+            SkydriveBackupLocation location = new SkydriveBackupLocation();
+            location.setId(UUID.randomUUID());
+            log.addEntry(createBackupItem(), location);
         }
         assertEquals(numEntries, log.getLogEntries().size());
         repos.saveBackupLog();
@@ -105,17 +125,5 @@ public class LocalRepositoryTest {
         backupItem.setBackupDate(new Date());
         backupItem.setVersion(RandomUtils.nextInt(100));
         return backupItem;
-    }
-    
-    private static class MockBackupLocation implements BackupLocation {
-        @Override
-        public UUID getId() {
-            return UUID.randomUUID();
-        }
-
-        @Override
-        public BackupClient getBackupClient() {
-            return null;
-        }
-    }
+    }    
 }
