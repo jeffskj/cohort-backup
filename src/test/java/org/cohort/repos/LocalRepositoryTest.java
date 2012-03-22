@@ -52,7 +52,7 @@ public class LocalRepositoryTest {
         
         repos = new LocalRepository(tmp.getRoot());
         assertEquals(key, repos.getConfig().getEncryptionKey());
-//        assertEquals(2, repos.getConfig().getBackupLocations().size());
+        assertEquals(2, repos.getConfig().getBackupLocations().size());
     }
     
     @Test
