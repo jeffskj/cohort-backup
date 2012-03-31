@@ -39,6 +39,10 @@ public class BackupLog {
         return Collections.unmodifiableList(logEntries);
     }
     
+    public boolean isUnsent(BackupItem item) {
+    	return itemBackups.containsKey(item.getId());
+    }
+    
     @Deprecated 
     /**
      * not actually deprecated, just wanted to hide it from type completion

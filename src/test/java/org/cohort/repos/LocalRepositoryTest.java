@@ -2,6 +2,7 @@ package org.cohort.repos;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.io.File;
@@ -16,6 +17,7 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.math.RandomUtils;
 import org.cohortbackup.backup.SkydriveBackupLocation;
 import org.cohortbackup.domain.BackupItem;
+import org.cohortbackup.domain.FolderBackupLocation;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -29,18 +31,17 @@ public class LocalRepositoryTest {
         LocalRepository repos = new LocalRepository(tmp.getRoot());
         assertNull(repos.getConfig().getEncryptionKey());
         
-        String key = "this is a test";
-        repos.getConfig().setEncryptionKey(key);
+        repos.getConfig().generateEncryptionKey();
+        repos.getConfig().setSecretPasword("top secret");
         
         SkydriveBackupLocation location1 = new SkydriveBackupLocation();
         location1.setId(UUID.randomUUID());
         location1.setApiToken(RandomStringUtils.randomAlphanumeric(20));
         location1.setUsername("location1");
         
-        SkydriveBackupLocation location2 = new SkydriveBackupLocation();
+        FolderBackupLocation location2 = new FolderBackupLocation();
         location2.setId(UUID.randomUUID());
-        location2.setApiToken(RandomStringUtils.randomAlphanumeric(20));
-        location2.setUsername("location2");
+        location2.setLocation(new File(tmp.getRoot(), "external"));
         
         repos.getConfig().addBackupLocation(location1);
         repos.getConfig().addBackupLocation(location2);
@@ -51,8 +52,11 @@ public class LocalRepositoryTest {
         System.out.println(configString);
         
         repos = new LocalRepository(tmp.getRoot());
-        assertEquals(key, repos.getConfig().getEncryptionKey());
+        assertNotNull(repos.getConfig().getEncryptionKey());
+        assertEquals("top secret", repos.getConfig().getSecretPasword());
+        assertNotNull(repos.getConfig().getSelfId());
         assertEquals(2, repos.getConfig().getBackupLocations().size());
+        
     }
     
     @Test

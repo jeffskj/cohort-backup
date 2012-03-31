@@ -19,6 +19,15 @@ import org.apache.commons.io.IOUtils;
 import org.cohortbackup.domain.Configuration;
 import org.cohortbackup.util.ChecksumUtils;
 
+/*
+ * metadata backup algorithm:
+ * configuration has generated encryption key
+ * encrypt config file with user supplied password, also stored in config, not encrypted locally
+ * encrypt all other metadata files with generated key
+ * nothing encrypted locally, just gzipped (why waste the CPU)
+ * 
+ * 
+ */
 public class LocalRepository {
     private static final int BUFFER_SIZE = 4096;
     private final File root;
@@ -119,7 +128,7 @@ public class LocalRepository {
     }
     
     private void loadConfig() throws IOException {
-        config = loadFromFile(configFile, new Configuration());        
+        config = loadFromFile(configFile, new Configuration(UUID.randomUUID()));        
     }
     
     @SuppressWarnings("unchecked")
