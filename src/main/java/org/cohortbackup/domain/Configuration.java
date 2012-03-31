@@ -16,6 +16,8 @@ import org.cohortbackup.backup.SkydriveBackupLocation;
 
 import com.google.common.collect.Lists;
 
+//TODO: refactor to have file access encapsulated in this object, it probably makes more sense
+// similar to ActiveRecord here, .save(), .load(), getFile(), getRaw(), etc
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Configuration {

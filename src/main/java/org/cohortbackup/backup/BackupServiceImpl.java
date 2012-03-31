@@ -21,7 +21,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * creates/recovers local backups from a local repository 
- * @author jeffskj@github.com
  *
  */
 public class BackupServiceImpl implements BackupService {
@@ -39,6 +38,10 @@ public class BackupServiceImpl implements BackupService {
             path.getBackupItems().add(item);
             repos.put(item.getId(), encryptionService.encrypt(gzip(path.openStream()), repos.getConfig().getEncryptionKey()));
         }
+        
+        // backup metadata
+        // encrypt config file with user supplied password, also stored in config, not encrypted locally
+        // encrypt all other metadata files with generated key
     }
 
     @Override

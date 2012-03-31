@@ -21,7 +21,7 @@ import org.cohortbackup.util.ChecksumUtils;
 
 /*
  * metadata backup algorithm:
- * configuration has generated encryption key
+ * done -- configuration has generated encryption key
  * encrypt config file with user supplied password, also stored in config, not encrypted locally
  * encrypt all other metadata files with generated key
  * nothing encrypted locally, just gzipped (why waste the CPU)
@@ -107,6 +107,18 @@ public class LocalRepository {
         return config;
     }
     
+    public InputStream getRawIndex() throws IOException {
+        return rawInputStream(indexFile);
+    }
+
+    public InputStream getRawBackupLog() throws IOException {
+    	return rawInputStream(backupLogFile);
+    }
+    
+    public InputStream getRawConfig() throws IOException {
+    	return rawInputStream(configFile);
+    }
+    
     public void saveIndex() throws IOException {
         saveToFile(indexFile, index);
     }
@@ -150,6 +162,10 @@ public class LocalRepository {
     
     private InputStream gzipInputStream(File f) throws FileNotFoundException, IOException {
         return new GZIPInputStream(new FileInputStream(f), BUFFER_SIZE);
+    }
+    
+    private InputStream rawInputStream(File f) throws FileNotFoundException, IOException {
+        return new BufferedInputStream(new FileInputStream(f), BUFFER_SIZE);
     }
     
     private OutputStream gzipOutputStream(File f) throws FileNotFoundException, IOException {
