@@ -1,14 +1,11 @@
 package org.cohortbackup.backup;
 
-import static org.junit.Assert.*;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.cohort.repos.LocalRepository;
 import org.cohort.repos.Path;
 import org.cohortbackup.domain.BackupClient;
@@ -38,16 +35,16 @@ public class BackupSendServiceImplTest extends EasyMockSupport {
 		UUID id = UUID.randomUUID();
 		repos.put(id, FileUtils.openInputStream(file));
 		BackupItem item = new BackupItem();
+		item.setId(id);
 		
 		BackupLocation backupLocation = createMock(BackupLocation.class);
 		BackupClient client = createMock(BackupClient.class);
-		client.send(EasyMock.same(item), EasyMock.isA(InputStream.class));
+		client.send(EasyMock.eq(item.getId().toString()), EasyMock.isA(InputStream.class));
 		EasyMock.expect(backupLocation.getBackupClient()).andReturn(client);
 		
 		replayAll();
 		
 		repos.getConfig().addBackupLocation(backupLocation);
-		item.setId(id);
 		repos.getIndex().getOutOfDatePaths().get(0).getBackupItems().add(item);
 		new BackupSendService().sendBackups(repos);
 		verifyAll();

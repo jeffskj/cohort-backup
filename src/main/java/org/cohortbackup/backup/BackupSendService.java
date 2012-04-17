@@ -1,5 +1,6 @@
 package org.cohortbackup.backup;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.cohort.repos.LocalRepository;
@@ -25,8 +26,8 @@ public class BackupSendService {
 			try {
 				backupLocation.getBackupClient().send(item.getId().toString(), repos.get(item.getId()));
 				return;
-			} catch (Exception e) {
-				e.printStackTrace();
+			} catch (IOException e) {
+			    throw new BackupException(item, backupLocation);
 			}
 		}
 	}

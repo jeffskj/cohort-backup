@@ -40,7 +40,7 @@ public class BackupLog {
     }
     
     public boolean isUnsent(BackupItem item) {
-    	return itemBackups.containsKey(item.getId());
+    	return !itemBackups.containsKey(item.getId());
     }
     
     @Deprecated 
