@@ -1,7 +1,34 @@
 package org.cohortbackup.backup;
 
-import org.cohort.repos.LocalRepository;
+import java.util.List;
 
-public interface BackupSendService {
-    void sendBackups(LocalRepository repos);
+import org.cohort.repos.LocalRepository;
+import org.cohort.repos.Path;
+import org.cohortbackup.domain.BackupItem;
+import org.cohortbackup.domain.BackupLocation;
+
+public class BackupSendService {
+
+    public void sendBackups(LocalRepository repos) {
+    	List<Path> unsentPaths = repos.getIndex().getUnsentPaths();
+        for (Path p : unsentPaths) {
+        	for (BackupItem item : p.getBackupItems()) {
+        		if (repos.getBackupLog().isUnsent(item)) {
+        			sendBackup(repos, item);
+        		}
+        	}
+        }
+    }
+
+	private void sendBackup(LocalRepository repos, BackupItem item) {
+		for (BackupLocation backupLocation : repos.getConfig().getBackupLocations()) {
+			try {
+				backupLocation.getBackupClient().send(item.getId().toString(), repos.get(item.getId()));
+				return;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
 }

@@ -1,4 +1,4 @@
-package org.cohortbackup.domain;
+package org.cohortbackup.backup;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
+import org.cohortbackup.domain.BackupClient;
+import org.cohortbackup.domain.BackupLocation;
 
 public class FolderBackupLocation implements BackupLocation {
 	private UUID id;
@@ -32,9 +34,9 @@ public class FolderBackupLocation implements BackupLocation {
 	public BackupClient getBackupClient() {
 		return new BackupClient() {
 			@Override
-			public void send(BackupItem item, InputStream input) {
+			public void send(String path, InputStream input) {
 				try {
-					FileUtils.copyInputStreamToFile(input, new File(getLocation(), item.getId().toString()));
+					FileUtils.copyInputStreamToFile(input, new File(getLocation(), path));
 				} catch (IOException e) {
 					throw new RuntimeException(e);
 				}

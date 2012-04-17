@@ -36,7 +36,7 @@ public class BackupServiceImplTest {
         Path path = new Path(dataFolder);
         repos.getIndex().addRoot(path);
         
-        BackupServiceImpl backupService = new BackupServiceImpl();
+        BackupService backupService = new BackupService();
         backupService.encryptionService = new BasicEncryptionService();
         backupService.backup(repos);
         

@@ -12,6 +12,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 
 import org.apache.commons.lang.RandomStringUtils;
+import org.cohortbackup.backup.FolderBackupLocation;
 import org.cohortbackup.backup.SkydriveBackupLocation;
 
 import com.google.common.collect.Lists;
