@@ -11,7 +11,7 @@ import org.cohortbackup.domain.BackupLocation;
 public class BackupSendService {
 
     public void sendBackups(LocalRepository repos) {
-    	List<Path> unsentPaths = repos.getIndex().getUnsentPaths();
+    	List<Path> unsentPaths = repos.getIndex().getUnsentPaths(repos.getBackupLog());
         for (Path p : unsentPaths) {
         	for (BackupItem item : p.getBackupItems()) {
         		if (repos.getBackupLog().isUnsent(item)) {

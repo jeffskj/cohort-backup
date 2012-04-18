@@ -1,7 +1,10 @@
 package org.cohortbackup.backup;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
@@ -40,13 +43,13 @@ public class BackupServiceIT {
         File dataFolder = tmp.newFolder("data");
         makeFileStructure(dataFolder, 3, 2);
         
-        printDir(dataFolder);
+        assertEquals(14, getFilesInDir(dataFolder).size());
         
         repos.getIndex().addRoot(new Path(dataFolder));
         backupService.backup(repos);
         sendService.sendBackups(repos);
         
-        printDir(backupFolder);
+        assertEquals(14, getFilesInDir(backupFolder).size());
     }
     
     private void makeFileStructure(File parent, int depth, int count) throws IOException {
@@ -58,9 +61,11 @@ public class BackupServiceIT {
         }
     }
     
-    private void printDir(File dir) {
-        for (File f : FileUtils.listFiles(dir, TrueFileFilter.TRUE, TrueFileFilter.TRUE)) {
+    private Collection<File> getFilesInDir(File dir) {
+        Collection<File> files = FileUtils.listFiles(dir, TrueFileFilter.TRUE, TrueFileFilter.TRUE);
+		for (File f : files) {
             System.out.println(f);
         }
+		return files;
     }
 }

@@ -133,11 +133,11 @@ public class Path {
     public File getFile() {
         return file;
     }
-    
-    public boolean isAwaitingSend() {
-        return backupItems.isEmpty() || backupItems.peekLast().getBackupDate() == null;
-    }
 
+    public BackupItem getMostRecentBackupItem() {
+    	return backupItems.peekLast();
+    }
+    
     public boolean isOutOfDate() {
         if (!isBackedUp()) {
             return true;

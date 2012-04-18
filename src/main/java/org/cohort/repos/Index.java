@@ -7,6 +7,8 @@ import javax.enterprise.inject.Alternative;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.cohortbackup.domain.BackupItem;
+
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 
@@ -33,11 +35,12 @@ public class Index {
         });
     }
 
-    public List<Path> getUnsentPaths() {
+    public List<Path> getUnsentPaths(final BackupLog log) {
         return depthFirstSearch(new Predicate<Path>() {
             @Override
             public boolean apply(Path path) {
-                return path.isAwaitingSend() && path.isFile();
+                BackupItem backupItem = path.getMostRecentBackupItem();
+				return backupItem != null && log.isUnsent(backupItem);
             }
         });
     }
