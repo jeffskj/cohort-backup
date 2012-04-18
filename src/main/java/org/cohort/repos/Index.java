@@ -76,7 +76,7 @@ public class Index {
     }
 
     public void addRoot(Path path) {
-        path.refreshChildren();
         roots.add(path);
+        path.refreshChildren();
     }
 }

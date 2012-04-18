@@ -1,65 +1,66 @@
 package org.cohortbackup.backup;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FilenameFilter;
 import java.io.IOException;
-
-import javax.inject.Inject;
+import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.WildcardFileFilter;
-import org.cohortbackup.remoting.AbstractServiceIT;
-import org.jboss.arquillian.api.Deployment;
-import org.jboss.arquillian.api.TargetsContainer;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.AfterClass;
+import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.apache.commons.lang.RandomStringUtils;
+import org.cohort.repos.LocalRepository;
+import org.cohort.repos.Path;
+import org.cohortbackup.encryption.BasicEncryptionService;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.rules.TemporaryFolder;
 
-@RunWith(Arquillian.class)
-public class BackupServiceIT extends AbstractServiceIT {
-    private static final String FAKE_DOCUMENT_TO_BACKUP = "LoremIpsum.docx";
-
-    @Deployment
-    @TargetsContainer("container-1")
-    public static WebArchive createTestArchive() {
-        return createBaseArchive()
-        // .addClasses(MockConfiguration.class, MockLocalIndexService.class)
-        // .addClasses(LocalPath.class, SwarmService.class, MockSwarmService.class)
-        // .addClasses(BackupItemWebServiceClient.class, MockBackupItemWebServiceClient.class)
-        // .addClasses(MockEncryptionService.class)
-        // .addClasses(BackupServiceImpl.class, LocalRepository.class)
-                .addAsResource(FAKE_DOCUMENT_TO_BACKUP, FAKE_DOCUMENT_TO_BACKUP);
+public class BackupServiceIT {
+    @Rule
+    public TemporaryFolder tmp = new TemporaryFolder();
+    
+    private BackupService backupService = new BackupService();
+    {
+        backupService.encryptionService = new BasicEncryptionService(); 
     }
-
-    // @Inject
-    // MockLocalIndexService indexService;
-
-    @Inject
-    BackupService backupService;
-
+    
+    BackupSendService sendService = new BackupSendService();
+    
     @Test
-    public void getBackupItemContents() throws FileNotFoundException, IOException {
-        // File dir = indexService.getDir();
-        // URL resource = getClass().getClassLoader().getResource(FAKE_DOCUMENT_TO_BACKUP);
-        // Resources.copy(resource, new FileOutputStream(new File(dir, FAKE_DOCUMENT_TO_BACKUP)));
-        // backupService.backup();
+    public void backupToFolder() throws IOException {
+        LocalRepository repos = new LocalRepository(tmp.newFolder("repos"));
+        File backupFolder = tmp.newFolder("backup");
+        
+        FolderBackupLocation backupLocation = new FolderBackupLocation();
+        backupLocation.setId(UUID.randomUUID());
+        backupLocation.setLocation(backupFolder);
+        repos.getConfig().addBackupLocation(backupLocation);
+        repos.getConfig().setEncryptionKey("encryption key");
+        repos.getConfig().setSecretPasword("top secret");
+        
+        File dataFolder = tmp.newFolder("data");
+        makeFileStructure(dataFolder, 3, 2);
+        
+        printDir(dataFolder);
+        
+        repos.getIndex().addRoot(new Path(dataFolder));
+        backupService.backup(repos);
+        sendService.sendBackups(repos);
+        
+        printDir(backupFolder);
     }
-
-    @AfterClass
-    public static void cleanupTemp() throws IOException {
-        File tempDir = FileUtils.getTempDirectory();
-        File[] files = tempDir.listFiles((FilenameFilter) new WildcardFileFilter("testing-repos-dir*"));
-        for (File file : files) {
-            System.out.println("deleting " + file);
-            try {
-                FileUtils.deleteDirectory(file);
-            } catch (IOException e) {
-                System.out.println("Failed to delete " + file);
-                System.out.println(e.getMessage());
-            }
+    
+    private void makeFileStructure(File parent, int depth, int count) throws IOException {
+        if (depth == 0) { return; }
+        parent.mkdir();
+        for (int i = 0; i < count; i++) {
+            FileUtils.writeStringToFile(new File(parent, "file" + depth + "-" + i), RandomStringUtils.randomAlphabetic(100));
+            makeFileStructure(new File(parent, "folder" + depth + "-" + i), depth-1, count);
+        }
+    }
+    
+    private void printDir(File dir) {
+        for (File f : FileUtils.listFiles(dir, TrueFileFilter.TRUE, TrueFileFilter.TRUE)) {
+            System.out.println(f);
         }
     }
 }

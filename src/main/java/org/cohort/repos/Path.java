@@ -135,7 +135,7 @@ public class Path {
     }
     
     public boolean isAwaitingSend() {
-        return backupItems.peekLast().getBackupDate() == null;
+        return backupItems.isEmpty() || backupItems.peekLast().getBackupDate() == null;
     }
 
     public boolean isOutOfDate() {
