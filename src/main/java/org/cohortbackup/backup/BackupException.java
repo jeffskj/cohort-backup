@@ -9,4 +9,8 @@ public class BackupException extends RuntimeException {
     public BackupException(BackupItem item, BackupLocation backupLocation) {
         super("couldn't backup item " + item.getId() + " to location " + backupLocation.getId());
     }
+
+	public BackupException(String path, BackupLocation backupLocation) {
+		super("couldn't path " + path + " to location " + backupLocation.getId());
+	}
 }

@@ -13,6 +13,7 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.cohort.repos.LocalRepository;
 import org.cohort.repos.Path;
 import org.cohortbackup.encryption.BasicEncryptionService;
+import org.cohortbackup.encryption.EncryptionServiceImpl;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -30,6 +31,8 @@ public class BackupServiceIT {
     
     @Test
     public void backupToFolder() throws IOException {
+    	sendService.encryptionService = new EncryptionServiceImpl();
+    	
         LocalRepository repos = new LocalRepository(tmp.newFolder("repos"));
         File backupFolder = tmp.newFolder("backup");
         
@@ -49,7 +52,7 @@ public class BackupServiceIT {
         backupService.backup(repos);
         sendService.sendBackups(repos);
         
-        assertEquals(14, getFilesInDir(backupFolder).size());
+        assertEquals(17, getFilesInDir(backupFolder).size());
     }
     
     private void makeFileStructure(File parent, int depth, int count) throws IOException {
