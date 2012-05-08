@@ -1,6 +1,9 @@
 package org.cohortbackup.backup;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
@@ -38,6 +41,15 @@ public class FolderBackupLocation implements BackupLocation {
 				try {
 					FileUtils.copyInputStreamToFile(input, new File(getLocation(), path));
 				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+			}
+
+			@Override
+			public InputStream receive(String path) {
+				try {
+					return new BufferedInputStream(new FileInputStream(new File(getLocation(), path)));
+				} catch (FileNotFoundException e) {
 					throw new RuntimeException(e);
 				}
 			}

@@ -46,7 +46,7 @@ public class BackupSendServiceImplTest extends EasyMockSupport {
 		
 		repos.getConfig().addBackupLocation(backupLocation);
 		repos.getIndex().getOutOfDatePaths().get(0).getBackupItems().add(item);
-		new BackupSendService().sendBackups(repos);
+		new RemoteBackupService().sendBackups(repos);
 		verifyAll();
 	}
 }

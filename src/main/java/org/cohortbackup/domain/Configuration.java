@@ -55,6 +55,15 @@ public class Configuration {
     public List<BackupLocation> getBackupLocations() {
         return backupLocations;
     }
+
+    public BackupLocation getBackupLocation(UUID id) {
+    	for (BackupLocation location : backupLocations) {
+    		if (location.getId().equals(id)) {
+    			return location;
+    		}
+    	}
+    	return null;
+    }
     
     public void addBackupLocation(BackupLocation location) {
         backupLocations.add(location);

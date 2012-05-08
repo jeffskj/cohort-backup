@@ -27,7 +27,7 @@ public class BackupServiceIT {
         backupService.encryptionService = new BasicEncryptionService(); 
     }
     
-    BackupSendService sendService = new BackupSendService();
+    RemoteBackupService sendService = new RemoteBackupService();
     
     @Test
     public void backupToFolder() throws IOException {

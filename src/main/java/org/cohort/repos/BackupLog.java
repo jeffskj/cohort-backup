@@ -1,5 +1,6 @@
 package org.cohort.repos;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -35,7 +36,11 @@ public class BackupLog {
         itemBackups.put(item.getId(), entry);
     }
     
-    public List<BackupLogEntry> getLogEntries() {
+    public Collection<BackupLogEntry> getLogEntries(BackupItem item) {
+    	return itemBackups.get(item.getId());
+    }
+    
+    public Collection<BackupLogEntry> getLogEntries() {
         return Collections.unmodifiableList(logEntries);
     }
     
